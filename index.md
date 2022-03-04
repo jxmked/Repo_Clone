@@ -55,3 +55,4 @@ bash clone.sh <%URL%> [-w]
 - `mv`
 
 #### **Created with love and frustration** by [Jovan](https://facebook/com/deguia25)
+###### Model:SH-JX-0001
