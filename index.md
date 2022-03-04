@@ -68,5 +68,5 @@ bash clone.sh https://github.com/jxmked/Repo_Clone -w
 - `git`
 - `mv`
 
-#### **Created with love and frustration** by [Jovan](https://facebook/com/deguia25)
+#### **Created with love and frustration** by [Jovan](https://facebook.com/deguia25)
 ###### Model:SH-CSA-0001 - Advance Repository Cloner API
