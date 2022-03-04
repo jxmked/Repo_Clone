@@ -29,6 +29,11 @@
 
 ```bash
 bash clone.sh <%URL%> [-w]
+#No .git folder or git commit history
+bash clone.sh https://github.com/jxmked/Repo_Clone 
+#Or
+#Download with .git folder or commit history. GITHUB TOKEN MUST EXISTING In CLONE.sh
+bash clone.sh https://github.com/jxmked/Repo_Clone -w
 ```
 
 ### **About .git folder**
