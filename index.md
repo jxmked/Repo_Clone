@@ -60,6 +60,7 @@ bash clone.sh https://github.com/jxmked/Repo_Clone -w
 ### Example links can be clone...
 - ```https://github.com/jxmked/Repo_Clone``` - Main branch
 - ```https://github.com/jxmked/Repo_Clone/tree/gh-pages``` - gh-pages branch
+- ```https://github.com/jxmked/C-language``` - Main branch
 
 ### Function has been used.
 - `mkdir`
