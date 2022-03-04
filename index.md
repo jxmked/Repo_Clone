@@ -1,29 +1,31 @@
-## Welcome to GitHub Pages
+# Repo Clone
 
-You can use the [editor on GitHub](https://github.com/jxmked/Repo_Clone/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+## Clone Github repository with/without ease of including `.git`
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Features
+- Clone Github repository with `.git` folder.
+- Clone Github repository without `.git` folder and save internet data charges.
+- Clone Github repository from different branch
+- Direct pasting copied URL from browser to CLI
 
-### Markdown
+### Requirements
+- `git` CLI must be installed on machine.
+- Internet connection required.
 
+### Installation and Use
+[Download](https://github.com/jxmked/Repo_Clone) and run `bash clone.sh <github repository url> [-w]`
+
+### Parameters
+| Params | input | Basic Description | is Required |
+| ------ | ----- | ----------------- | ----------- |
+| $1 | %URl% | Github repository to clone | Required |
+| $2 | -w | Clone with `.git` folder for later use | Optional |
+
+## 
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+```bash
+bash clone.sh <%URL> [-k]
 ```
 
 For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
