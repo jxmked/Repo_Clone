@@ -77,7 +77,7 @@ printf "\n"
 
 cd "${_FOLDER}"
 
-#Just enter anything from param 2 to clone with data
+#Just enter -w. Clone with data
 if [[ $2 == '-w' ]]; then
     cd "${_FOLDER}/${USERNAME}"
     #When cloning with data
@@ -127,7 +127,7 @@ fi
 
 #Lets create Timestamp
 #User > Branch > Repository
-echo "$(date) | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/${_DATAFOLDER}/log.txt"
+echo "$(date) | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/log.txt"
 
 #printf "Downloaded content size: "
 #du -hs "${_FOLDER}/${RES}"
@@ -138,3 +138,4 @@ printf "\n"
 #Developed with Love and Frustration by Jovan De Guia
 #For Personal Use Only
 #No License has been provided
+#Model:SH-CSA-0001 - Advance Repository Cloner API
