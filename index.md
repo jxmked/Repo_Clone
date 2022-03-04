@@ -19,22 +19,30 @@
 
 ## Notes:
 - Github token is required to clone repository with `.git` folder.
-    -- Must replace `<TOKEN HERE>` with actual token of yours
-- Directory where downloaded files will go must be change to already existing directory.
-- `log.txt` is stored in `.xio`
+    - Must replace `<TOKEN HERE>` with actual token of yours
+- Directory where downloaded files will go.
+    - Must be change to already existing directory.
+- `log.txt` is stored in `main` folder.
+- Will fail if repository folder is already existing. (No force download available)
+- Same repository with different branch will also fail
+- Master/Main branch is default
 
 ```bash
 bash clone.sh <%URL%> [-w]
 ```
 
-### **About the project**
+### **About .git folder**
 "The `.git` folder contains all information that is necessary for the project and all information relating commits, remote repository address, etc. It also contains a log that stores the commit history. This log can help you to roll back to the desired version of the code." - Google
 
 #### Tested in...
 - Android Termux. ("So, what?")
 
-#### Downloaded folders will look like this...
+#### Downloaded repositories will look like this...
 - __Downloads__
+    - **jxmked**
+        - Repo_Clone
+        - C-language
+
     - **Username A**
         - Repo
         - Repo
@@ -45,8 +53,8 @@ bash clone.sh <%URL%> [-w]
         - Repo
 
 ### Example links can be clone...
-- ```https://github.com/jxmked/Repo_Clone```
-- ```https://github.com/jxmked/Repo_Clone/tree/gh-pages```
+- ```https://github.com/jxmked/Repo_Clone``` - Main branch
+- ```https://github.com/jxmked/Repo_Clone/tree/gh-pages``` - gh-pages branch
 
 ### Function has been used.
 - `mkdir`
