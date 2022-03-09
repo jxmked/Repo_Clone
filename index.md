@@ -1,7 +1,10 @@
+### About
+Clone Github repository in a manageable way
+
 ### Features
 - Clone Github repository with `.git` folder.
 - Clone Github repository without `.git` folder and save internet data charges.
-- Clone Github repository from different branch
+- Clone Github same repository from different branch
 - Direct pasting copied URL from browser to CLI
 
 ### Requirements
@@ -40,22 +43,22 @@ bash clone.sh https://github.com/jxmked/Repo_Clone -w
 "The `.git` folder contains all information that is necessary for the project and all information relating commits, remote repository address, etc. It also contains a log that stores the commit history. This log can help you to roll back to the desired version of the code." - Google
 
 #### Tested in...
-- Android Termux. ("So, what?")
+- Android Termux.
 
 #### Downloaded repositories will look like this...
 - __Downloads__
     - **jxmked**
-        - Repo_Clone
-        - C-language
-
+        - Repo_Clone (master)
+        - C-language (master)
+    
     - **Username A**
-        - Repo
-        - Repo
-
+        - Repo (...)
+        - Repo (...)
+    
     - **Username B**
-        - Repo
-        - Repo
-        - Repo
+        - Repo (...)
+        - Repo (...)
+        - Repo (...)
 
 ### Example links can be clone...
 - ```https://github.com/jxmked/Repo_Clone``` - Main branch
@@ -69,4 +72,4 @@ bash clone.sh https://github.com/jxmked/Repo_Clone -w
 - `mv`
 
 #### **Created with love and frustration** by [Jovan](https://facebook.com/deguia25)
-###### Model:SH-CSA-0001 - Advance Repository Cloner API
+###### Model:SH-CSA-0002 - Advance Repository Cloner API
