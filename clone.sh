@@ -5,8 +5,11 @@
 #No License has been provided.
 
 #Downloaded files will go here
-_FOLDER='/storage/emulated/0/Working Directory/git clone'
+_FOLDER='/storage/emulated/0/@webpage/git clone'
 _DATAFOLDER=".xio"
+
+#Additional
+. "/data/data/com.termux/files/home/aliases/xio-aliases.sh"
 
 #Temporary folder
 TMP="tmp"
@@ -27,8 +30,22 @@ function createDir(){
     fi
 }
 
+function onError(){
+    echo -e "\e[1;31mSomething went wrong\e[0m"
+    echo "Exiting..."
+    exit 1 #Terminate
+}
+
+function checkExistence(){
+    if [[ -d "${1}/${2} (${3})" ]]; then
+        echo -e "\e[1;31mFailed: ${RES} does exists on local machine.\e[0m"
+        echo "Exiting..."
+        exit 1 #Terminate
+    fi
+}
+
 BRANCH="master" #Default
-TRH=""
+TR=""
 
 if [[ $(echo $1 | cut -d'/' -f 1) == 'https:' ]]; then 
     USERNAME=$(echo $1 | cut -d'/' -f 4)
@@ -55,14 +72,7 @@ else
     REPO=$(echo $1 | cut -d'/' -f 2)
 fi
 
-cd "${_FOLDER}"
-
-createDir "${_FOLDER}/${_DATAFOLDER}"
-createDir "${USERNAME}"
-
-cd "${_FOLDER}/${USERNAME}"
-
-RES=$USERNAME"/"$REPO
+RES="${USERNAME}/${REPO}"
 
 #Check for existence of Github Repo
 if ! curl --output /dev/null --silent --head --fail "https://github.com/${RES}"; then
@@ -71,63 +81,69 @@ if ! curl --output /dev/null --silent --head --fail "https://github.com/${RES}";
     exit 1 #Terminate
 fi
 
-echo "Cloning...${1}"
-
+echo "Cloning..."
 printf "\n"
 
 cd "${_FOLDER}"
+createDir "${_FOLDER}/${_DATAFOLDER}"
+createDir "${USERNAME}"
 
-#Just enter -w. Clone with data
+cd "${_FOLDER}/${USERNAME}"
+cd "${_FOLDER}"
+
+#Check if folder existing on local Machine
+checkExistence $_FOLDER $RES $BRANCH
+
+#Output folder under username
+OUTPUT="${REPO} (${BRANCH})"
+
+createDir "${_FOLDER}/${_DATAFOLDER}/${TMP}"
+createDir "${_FOLDER}/${USERNAME}/${OUTPUT}"
+
+#Download files to tmp folder
+cd "${_FOLDER}/${_DATAFOLDER}/${TMP}"
+    
+#Just enter anything from param 2 to clone with data
 if [[ $2 == '-w' ]]; then
-    cd "${_FOLDER}/${USERNAME}"
     #When cloning with data
     TOKEN=<TOKEN HERE>
     
     if [[ $TR == 'tree' ]]; then
-        git clone --single-branch --branch $BRANCH https://$TOKEN@github.com/$RES.git
+        git clone --single-branch --branch $BRANCH https://${TOKEN}@github.com/$RES.git || { onError 1; }
     else
         #Without defined branch
-        git clone "https://${TOKEN}@${1:8}.git"
+        git clone "https://${TOKEN}@${1:8}.git" || { onError 1; }
     fi
-    echo -e "\e[1;32mCloned with data\e[0m"
+    
+    MSG="\e[1;32mCloned with data\e[0m"
 else
-    #Download Repo without .git files
-    #This download will only download files not .git
-    createDir "${_FOLDER}/${_DATAFOLDER}/${TMP}"
-    
-    if [[ -d "${_FOLDER}/${RES}" ]]; then
-        echo -e "\e[1;31mFailed: ${RES} does exists on local machine.\e[0m"
-        echo "Exiting..."
-        exit 1 #Terminate
-    fi
-    
-    createDir "${_FOLDER}/${RES}"
-    
-    #Change dir to TMP folder to put their the downloaded files
-    cd "${_FOLDER}/${_DATAFOLDER}/${TMP}"
+    #Download Repo without .git folder
     
     #Init download
-    curl -L "https://github.com/${RES}/tarball/${BRANCH}" | tar xz
+    curl -L "https://github.com/${RES}/tarball/${BRANCH}" | tar xz || { onError 1; }
     
-    #To Temporary Downloaded Folder
-    F="${_FOLDER}/${_DATAFOLDER}/${TMP}/$(ls)"
-    
-    if [[ ! -d "${F}" ]]; then
-        echo -e "\e[1;31mFailed: Something went wrong.\e[0m"
-        echo "Exiting..."
-        
-        exit 1
-    fi
-    
-    #Move files from TMP to Desired location
-    mv -T "${F}" "${_FOLDER}/${RES}"
-    
-    echo -e "\e[1;32mCloned without data\e[0m"
+    MSG="\e[1;32mCloned without data\e[0m"
 fi
+
+#Move downloaded folder to...
+F="${_FOLDER}/${_DATAFOLDER}/${TMP}/$(ls)"
+    
+if [[ ! -d "${F}" ]]; then
+    onError 1
+fi
+
+#desired location
+mv -T "${F}" "${_FOLDER}/${USERNAME}/${OUTPUT}" || {
+    echo -e "\e[1;31mCheck tmp folder\e[0m"
+    onError 1; 
+}
+
+echo -e $MSG
+
 
 #Lets create Timestamp
 #User > Branch > Repository
-echo "$(date) | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/log.txt"
+echo "$(date) | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/${_DATAFOLDER}/log.txt"
 
 #printf "Downloaded content size: "
 #du -hs "${_FOLDER}/${RES}"
@@ -138,4 +154,4 @@ printf "\n"
 #Developed with Love and Frustration by Jovan De Guia
 #For Personal Use Only
 #No License has been provided
-#Model:SH-CSA-0001 - Advance Repository Cloner API
+#Model:SH-CSA-0002 - Advance Repository Cloner API
