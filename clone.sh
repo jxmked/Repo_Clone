@@ -1,15 +1,10 @@
 #!/bin/bash
 
-#Developed by Jovan De Guia.
 #For personal use only.
-#No License has been provided.
 
 #Downloaded files will go here
 _FOLDER='/storage/emulated/0/@webpage/git clone'
 _DATAFOLDER=".xio"
-
-#Additional
-. "/data/data/com.termux/files/home/aliases/xio-aliases.sh"
 
 #Temporary folder
 TMP="tmp"
@@ -151,7 +146,7 @@ echo "$(date) | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/${_DATAFOLDER}/log.txt
 echo $USERNAME" > "$REPO
 printf "\n"
 
-#Developed with Love and Frustration by Jovan De Guia
+#Developed with Love and Frustration by Jovan
 #For Personal Use Only
-#No License has been provided
+#License under MIT
 #Model:SH-CSA-0002 - Advance Repository Cloner API
