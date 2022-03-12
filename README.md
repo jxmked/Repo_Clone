@@ -28,8 +28,6 @@ Clone Github repository in a manageable way
 - Directory where downloaded files will go.
     - Must be change to already existing directory.
 - `log.txt` is stored in `main` folder.
-- Will fail if repository folder is already existing. (No force download available)
-- Same repository with different branch will also fail
 - Master/Main branch is default
 
 ```bash
