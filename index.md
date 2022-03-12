@@ -26,8 +26,6 @@ Clone Github repository in a manageable way
 - Directory where downloaded files will go.
     - Must be change to already existing directory.
 - `log.txt` is stored in `main` folder.
-- Will fail if repository folder is already existing. (No force download available)
-- Same repository with different branch will also fail
 - Master/Main branch is default
 
 ```bash
@@ -38,7 +36,6 @@ bash clone.sh https://github.com/jxmked/Repo_Clone
 #Download with .git folder or commit history. GITHUB TOKEN MUST EXISTING In CLONE.sh
 bash clone.sh https://github.com/jxmked/Repo_Clone -w
 ```
-
 ### **About .git folder**
 "The `.git` folder contains all information that is necessary for the project and all information relating commits, remote repository address, etc. It also contains a log that stores the commit history. This log can help you to roll back to the desired version of the code." - Google
 
