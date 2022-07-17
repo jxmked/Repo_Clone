@@ -104,7 +104,6 @@ function getFromArgs(){
 # ----------------------------------------
 # Get Flags if exists and change state
 
-IS_PRIVATE=0
 WITH_DATA=0
 
 if [[ $_ARGS ]]; then
