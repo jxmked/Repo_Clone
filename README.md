@@ -22,6 +22,7 @@ Clone Github repository in a manageable way
 | %URl% | Github repository to clone | Required |
 | -w | Clone with `.git` folder for later use | Optional |
 | -p | Required when cloning private repository | Optional|
+
 ## Notes:
 - Github token is required to clone repository with `.git` folder.
 - Directory where downloaded files will go.
@@ -30,7 +31,6 @@ Clone Github repository in a manageable way
 - Master/Main branch is default
 
 ```bash
-bash clone.sh <%URL%> [-w]
 #No .git folder or git commit history
 bash clone.sh https://github.com/jxmked/Repo_Clone 
 #Or
