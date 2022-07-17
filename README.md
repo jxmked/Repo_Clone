@@ -24,7 +24,6 @@ Clone Github repository in a manageable way
 
 ## Notes:
 - Github token is required to clone repository with `.git` folder.
-    - Must replace `<TOKEN HERE>` with actual token of yours
 - Directory where downloaded files will go.
     - Must be change to already existing directory.
 - `log.txt` is stored in `main` folder.
