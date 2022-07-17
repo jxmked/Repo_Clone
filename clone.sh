@@ -167,6 +167,20 @@ else
     REPO=$(echo $_REPO | cut -d'/' -f 2)
 fi
 
+
+
+
+[[ "${a}" =~ github.com/([-[:alnum:]\+&@#%?=~_|!:,.;]*\/?){2,4} ]] && {
+    un=$(echo $BASH_REMATCH | cut -d'/' -f 2) # Username
+    rt=$(echo $BASH_REMATCH | cut -d'/' -f 3) # Repository
+    
+    # Branch
+    [[ "${BASH_REMATCH}" =~ tree\/([-[:alnum:]\+&@#%?=~_|!:,.;]*) ]] && {
+        tr=${BASH_REMATCH[1]}
+    }
+}
+
+
 RES="${USERNAME}/${REPO}"
 
 MM='Cloning...'
