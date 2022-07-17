@@ -145,7 +145,7 @@ function checkExistence(){
         if [[ $(ls -A "${1}") ]]; then  # Folder not emoty
             echo -e "\e[1;31mFailed: ${RES} does exists on local machine.\e[0m"
             echo "Exiting..."
-            exit 1 # Terminate
+            exit 1
         fi
     fi
 }
