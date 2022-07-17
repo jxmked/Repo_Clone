@@ -190,11 +190,11 @@ cd "${_FOLDER}/${_DATAFOLDER}/${TMP}"
 #Just enter anything from param 2 to clone with data
 if [[ $WITH_DATA -eq 1 ]]; then
     #When cloning with data
-    if [[ ! "${BRANCH}" == "master" ]]; then
-        git clone --single-branch --branch "${BRANCH}" "https://${TOKEN}@github.com/${RES}.git" || { onError 1; }
-    else
+    if [[ "${BRANCH}" == "master" ]]; then
         #Without defined branch
         git clone "https://${TOKEN}@${RES}.git" || { onError 1; }
+    else
+        git clone --single-branch --branch "${BRANCH}" "https://${TOKEN}@github.com/${RES}.git" || { onError 1; }
     fi
     
     MSG="\e[1;32mCloned with data\e[0m"
