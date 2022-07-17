@@ -191,7 +191,7 @@ cd "${_FOLDER}/${_DATAFOLDER}/${TMP}"
 if [[ $WITH_DATA -eq 1 ]]; then
     #When cloning with data
     if [[ ! "${BRANCH}" == "master" ]]; then
-        git clone --single-branch --branch $BRANCH "https://${TOKEN}@github.com/${RES}.git" || { onError 1; }
+        git clone --single-branch --branch "${BRANCH}" "https://${TOKEN}@github.com/${RES}.git" || { onError 1; }
     else
         #Without defined branch
         git clone "https://${TOKEN}@${RES}.git" || { onError 1; }
