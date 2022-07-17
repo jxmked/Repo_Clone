@@ -142,7 +142,7 @@ function onError(){
 
 function checkExistence(){
     
-    if [[ -d "${1}/${2} (${3})" ]]; then
+    if [[ -d "${1}" ]]; then
         if [[ "$(ls -A )"]]
         echo -e "\e[1;31mFailed: ${RES} does exists on local machine.\e[0m"
         echo "Exiting..."
