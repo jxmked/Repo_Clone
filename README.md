@@ -26,7 +26,7 @@ Clone Github repository in a manageable way
 - Github token is required to clone repository with `.git` folder.
 - Directory where downloaded files will go.
     - Must be change to already existing directory.
-- `log.txt` is stored in `main` folder.
+- `log.txt` is stored in `.xio` folder.
 - Master/Main branch is default
 
 ```bash
