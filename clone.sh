@@ -168,6 +168,7 @@ fi
 printf "\n"
 
 cd "${_FOLDER}"
+
 createDir "${_FOLDER}/${_DATAFOLDER}"
 createDir "${USERNAME}"
 
