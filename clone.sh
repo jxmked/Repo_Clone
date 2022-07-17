@@ -9,7 +9,7 @@ _FOLDER='/storage/emulated/0/@webpage/git clone'
 
 _DATAFOLDER=".xio"
 
-TOKEN="<Your Github Token else cloning with data and private repo will not work>"
+TOKEN="<Token Here>"
 
 #Temporary folder
 TMP="tmp"
@@ -144,28 +144,27 @@ function checkExistence(){
     if [[ -d "${1}/${2} (${3})" ]]; then
         echo -e "\e[1;31mFailed: ${RES} does exists on local machine.\e[0m"
         echo "Exiting..."
-        exit 1 #Terminate
+        exit 1 # Terminate
     fi
 }
 
 RES="${USERNAME}/${REPO}"
 
-MM='Cloning...'
-
-#Check for existence of Github Repo
+# Check for existence of Github Repo
 if ! curl --output /dev/null --silent --head --fail "https://github.com/${RES}"; then
-    #If were cloning private repository, the code above will fail
+    # If were cloning private repository, the code above will fail
     if [[ $WITH_DATA -eq 0 ]]; then
         echo -e "\e[1;31mFailed: https://github.com/${RES} does not exists.\e[0m"
         echo "Maybe it is a private repository."
         echo "Use '-w' flag to clone" 
         echo "Exiting..."
-        exit 1 #Terminate
+        exit 1 # Terminate
     fi
-    MM='Cloning private repository...'
+    echo 'Cloning Private Repository...'
+else
+    echo "Cloning Public Repository..."
 fi
 
-echo $MM
 printf "\n"
 
 cd "${_FOLDER}"
@@ -175,23 +174,23 @@ createDir "${USERNAME}"
 cd "${_FOLDER}/${USERNAME}"
 cd "${_FOLDER}"
 
-#Check if folder existing on local Machine
+# Check if folder existing on local Machine
 checkExistence $_FOLDER $RES $BRANCH
 
-#Output folder under username
+# Output folder under username
 OUTPUT="${REPO} (${BRANCH})"
 
 createDir "${_FOLDER}/${_DATAFOLDER}/${TMP}"
 createDir "${_FOLDER}/${USERNAME}/${OUTPUT}"
 
-#Download files to tmp folder
+# Download files to tmp folder
 cd "${_FOLDER}/${_DATAFOLDER}/${TMP}"
     
-#Just enter anything from param 2 to clone with data
+# Just enter anything from param 2 to clone with data
 if [[ $WITH_DATA -eq 1 ]]; then
-    #When cloning with data
+    # When cloning with data
     if [[ "${BRANCH}" == "master" ]]; then
-        #Without defined branch
+        # Without defined branch
         git clone "https://${TOKEN}@${RES}.git" || { onError 1; }
     else
         git clone --single-branch --branch "${BRANCH}" "https://${TOKEN}@github.com/${RES}.git" || { onError 1; }
@@ -199,22 +198,22 @@ if [[ $WITH_DATA -eq 1 ]]; then
     
     MSG="\e[1;32mCloned with data\e[0m"
 else
-    #Download Repo without .git folder
+    # Download Repo without .git folder
     
-    #Init download
+    # Init download
     curl -L "https://github.com/${RES}/tarball/${BRANCH}" | tar xz || { onError 1; }
     
     MSG="\e[1;32mCloned without data\e[0m"
 fi
 
-#Move downloaded folder to...
+# Move downloaded folder to...
 F="${_FOLDER}/${_DATAFOLDER}/${TMP}/$(ls)"
     
 if [[ ! -d "${F}" ]]; then
     onError 1
 fi
 
-#desired location
+# Desired location
 mv -T "${F}" "${_FOLDER}/${USERNAME}/${OUTPUT}" || {
     echo -e "\e[1;31mCheck tmp folder\e[0m"
     onError 1; 
@@ -223,8 +222,8 @@ mv -T "${F}" "${_FOLDER}/${USERNAME}/${OUTPUT}" || {
 echo -e $MSG
 
 
-#Lets create Timestamp
-#User > Branch > Repository
+# Lets create Timestamp
+# User > Branch > Repository
 echo "$(date) | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/${_DATAFOLDER}/log.txt"
 
 
