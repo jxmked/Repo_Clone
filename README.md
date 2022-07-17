@@ -17,11 +17,11 @@ Clone Github repository in a manageable way
 [Download](https://github.com/jxmked/Repo_Clone) and run `bash clone.sh <github repository url> [-w]`
 
 ### Parameters
-| Params | Commands | Basic Description | is Required |
-| :---: | :---:| :---: | :---: |
-| $1 | %URl% | Github repository to clone | Required |
-| $2 | -w | Clone with `.git` folder for later use | Optional |
-
+| Commands | Basic Description | is Required |
+| :---:| :---: | :---: |
+| %URl% | Github repository to clone | Required |
+| -w | Clone with `.git` folder for later use | Optional |
+| -p | Required when cloning private repository | Optional|
 ## Notes:
 - Github token is required to clone repository with `.git` folder.
 - Directory where downloaded files will go.
