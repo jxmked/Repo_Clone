@@ -39,7 +39,10 @@ bash clone.sh https://github.com/jxmked/Repo_Clone -w
 ```
 
 ### **About .git folder**
-"The `.git` folder contains all information that is necessary for the project and all information relating commits, remote repository address, etc. It also contains a log that stores the commit history. This log can help you to roll back to the desired version of the code." - Google
+> "The `.git` folder contains all information that is necessary for the project and 
+> all information relating commits, remote repository address, etc. It also contains 
+> a log that stores the commit history. This log can help you to roll back to the 
+> desired version of the code." - Google
 
 #### Tested in...
 - Android Termux.
