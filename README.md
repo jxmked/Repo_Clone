@@ -25,7 +25,7 @@ Clone Github repository in a manageable way
 
 ## Notes:
 - Github token is required to clone repository with data and private repository.
-- Directory where downloaded files will go.
+- Set your own directory inside of the `clone.sh` file
     - Must be change to already existing directory.
 - `log.txt` is stored in `.xio` folder.
 - Master/Main branch is default
