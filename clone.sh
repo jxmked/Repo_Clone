@@ -112,17 +112,18 @@ fi
 # ----------------------------------------
 # Get Username, Repository Name and Branch
 BRANCH="master" #Default
-TR=""
+TR=0
 USERNAME=""
 REPO=""
 
-[[ "${a}" =~ github.com/([-[:alnum:]\+&@#%?=~_|!:,.;]*\/?){2,4} ]] && {
+[[ "${_REPO}" =~ github.com/([-[:alnum:]\+&@#%?=~_|!:,.;]*\/?){2,} ]] && {
     USERNAME=$(echo $BASH_REMATCH | cut -d'/' -f 2) # Username
     REPO=$(echo $BASH_REMATCH | cut -d'/' -f 3) # Repository
     
     # Branch
     [[ "${BASH_REMATCH}" =~ tree\/([-[:alnum:]\+&@#%?=~_|!:,.;]*) ]] && {
         BRANCH=${BASH_REMATCH[1]}
+        TR=1
     }
 }
 # ----------------------------------------
@@ -144,6 +145,7 @@ function checkExistence(){
     if [[ -d "${1}" ]]; then # Existing
         if [[ $(ls -A "${1}") ]]; then  # Folder not emoty
             echo -e "\e[1;31mFailed: ${RES} does exists on local machine.\e[0m"
+            echo "Directory: ${1}"
             echo "Exiting..."
             exit 1
         fi
@@ -171,41 +173,43 @@ printf "\n"
 
 cd "${_FOLDER}"
 
+# Create System Directory
 createDir "${_FOLDER}/${_DATAFOLDER}"
+createDir "${_FOLDER}/${_DATAFOLDER}/${TMP}"
+
 createDir "${USERNAME}"
 
 cd "${_FOLDER}/${USERNAME}"
-cd "${_FOLDER}"
 
 OUTPUT="${REPO} (${BRANCH})" # Output Folder
 
 # Check Directory existing or not empty
 checkExistence "${OUTPUT}"
 
-createDir "${_FOLDER}/${_DATAFOLDER}/${TMP}"
 createDir "${_FOLDER}/${USERNAME}/${OUTPUT}"
 
 # Download files to tmp folder
 cd "${_FOLDER}/${_DATAFOLDER}/${TMP}"
     
-# Just enter anything from param 2 to clone with data
+# Begin Cloning With Specific Parameters
 if [[ $WITH_DATA -eq 1 ]]; then
     # When cloning with data
-    if [[ "${BRANCH}" == "master" ]]; then
+    if [[ ${TR} -eq 0 ]]; then
+        # I'm still looking for the best to get the main branch name from github
         # Without defined branch
-        git clone "https://${TOKEN}@${RES}.git" || { onError 1; }
+        git clone "https://${TOKEN}@github.com/${RES}" || { onError 1; }
     else
-        git clone --single-branch --branch "${BRANCH}" "https://${TOKEN}@github.com/${RES}.git" || { onError 1; }
+        git clone --single-branch --branch "${BRANCH}" "https://${TOKEN}@github.com/${RES}" || { onError 1; }
     fi
     
-    MSG="\e[1;32mCloned with data\e[0m"
+    echo -e "\e[1;32mCloned with data\e[0m"
 else
     # Download Repo without .git folder
     
     # Init download
     curl -L "https://github.com/${RES}/tarball/${BRANCH}" | tar xz || { onError 1; }
     
-    MSG="\e[1;32mCloned without data\e[0m"
+    echo -e "\e[1;32mCloned without data\e[0m"
 fi
 
 # Move downloaded folder to...
@@ -220,8 +224,6 @@ mv -T "${F}" "${_FOLDER}/${USERNAME}/${OUTPUT}" || {
     echo -e "\e[1;31mCheck tmp folder\e[0m"
     onError 1; 
 }
-
-echo -e $MSG
 
 
 # Lets create Timestamp
@@ -243,4 +245,4 @@ printf "\n"
 # Developed with Love and Frustration by Jovan De Guia
 # License under MIT License
 # Github Username: jxmked
-# Model:SH-CSA-0005 - Advance Repository Cloner API
+# Model:SH-CSA-0007 - Advance Repository Cloner API
