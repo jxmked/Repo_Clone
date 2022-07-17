@@ -117,7 +117,7 @@ if [[ $_ARGS ]]; then
 fi
 
 # ----------------------------------------
-
+# Get Username, Repository Name and Branch
 BRANCH="master" #Default
 TR=""
 
@@ -130,7 +130,7 @@ TR=""
         BRANCH=${BASH_REMATCH[1]}
     }
 }
-
+# ----------------------------------------
 
 function createDir(){
     #Create if when not exists
