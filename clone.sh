@@ -108,10 +108,6 @@ IS_PRIVATE=0
 WITH_DATA=0
 
 if [[ $_ARGS ]]; then
-    # If We Need Tk Clone Private Repository
-    # We need its `.git` data. It is required
-    IS_PRIVATE=$(getFromArgs '-p' ${_ARGS[@]})
-    
     # Need `.git` folder?
     WITH_DATA=$(getFromArgs '-w' ${_ARGS[@]})
 fi
