@@ -243,4 +243,4 @@ printf "\n"
 # Developed with Love and Frustration by Jovan De Guia
 # License under MIT License
 # Github Username: jxmked
-#Model:SH-CSA-0005 - Advance Repository Cloner API
+# Model:SH-CSA-0005 - Advance Repository Cloner API
