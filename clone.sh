@@ -194,7 +194,7 @@ if [[ $WITH_DATA -eq 1 ]]; then
         git clone --single-branch --branch $BRANCH https://${TOKEN}@github.com/$RES.git || { onError 1; }
     else
         #Without defined branch
-        git clone "https://${TOKEN}@${_REPO:8}.git" || { onError 1; }
+        git clone "https://${TOKEN}@${RES}.git" || { onError 1; }
     fi
     
     MSG="\e[1;32mCloned with data\e[0m"
