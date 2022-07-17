@@ -160,7 +160,7 @@ MM='Cloning...'
 #Check for existence of Github Repo
 if ! curl --output /dev/null --silent --head --fail "https://github.com/${RES}"; then
     #If were cloning private repository, the code above will fail
-    if [[ $WITH_DATA -eq 0 && $IS_PRIVATE -eq 0 ]]; then
+    if [[ $WITH_DATA -eq 0 ]]; then
         echo -e "\e[1;31mFailed: https://github.com/${RES} does not exists.\e[0m"
         echo "Maybe it is a private repository."
         echo "Use '-w' flag to clone" 
