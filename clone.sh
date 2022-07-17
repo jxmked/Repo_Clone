@@ -118,6 +118,20 @@ fi
 
 # ----------------------------------------
 
+BRANCH="master" #Default
+TR=""
+
+[[ "${a}" =~ github.com/([-[:alnum:]\+&@#%?=~_|!:,.;]*\/?){2,4} ]] && {
+    USERNAME=$(echo $BASH_REMATCH | cut -d'/' -f 2) # Username
+    REPO=$(echo $BASH_REMATCH | cut -d'/' -f 3) # Repository
+    
+    # Branch
+    [[ "${BASH_REMATCH}" =~ tree\/([-[:alnum:]\+&@#%?=~_|!:,.;]*) ]] && {
+        BRANCH=${BASH_REMATCH[1]}
+    }
+}
+
+
 function createDir(){
     #Create if when not exists
     if [[ ! -d "${1}" ]]; then
@@ -138,20 +152,6 @@ function checkExistence(){
         exit 1 #Terminate
     fi
 }
-
-BRANCH="master" #Default
-TR=""
-
-[[ "${a}" =~ github.com/([-[:alnum:]\+&@#%?=~_|!:,.;]*\/?){2,4} ]] && {
-    USERNAME=$(echo $BASH_REMATCH | cut -d'/' -f 2) # Username
-    REPO=$(echo $BASH_REMATCH | cut -d'/' -f 3) # Repository
-    
-    # Branch
-    [[ "${BASH_REMATCH}" =~ tree\/([-[:alnum:]\+&@#%?=~_|!:,.;]*) ]] && {
-        BRANCH=${BASH_REMATCH[1]}
-    }
-}
-
 
 RES="${USERNAME}/${REPO}"
 
