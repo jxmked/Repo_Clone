@@ -4,7 +4,7 @@
 # License Under MIT License
 
 #Downloaded files will go here
-# Change This Directory to your existing Working Dir
+# Change This Directory to your existing Working Directory
 _FOLDER='/storage/emulated/0/@webpage/git clone'
 
 _DATAFOLDER=".xio"
