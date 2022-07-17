@@ -71,4 +71,4 @@ bash clone.sh https://github.com/jxmked/Repo_Clone -w
 - `mv`
 
 #### **Created with love and frustration** by [Jovan](https://facebook.com/deguia25)
-###### Model:SH-CSA-0002 - Advance Repository Cloner API
+###### Model:SH-CSA-0004 - Advance Repository Cloner API
