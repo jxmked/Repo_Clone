@@ -141,7 +141,9 @@ function onError(){
 }
 
 function checkExistence(){
+    
     if [[ -d "${1}/${2} (${3})" ]]; then
+        if [[ "$(ls -A )"]]
         echo -e "\e[1;31mFailed: ${RES} does exists on local machine.\e[0m"
         echo "Exiting..."
         exit 1 # Terminate
@@ -175,11 +177,9 @@ createDir "${USERNAME}"
 cd "${_FOLDER}/${USERNAME}"
 cd "${_FOLDER}"
 
-# Check if folder existing on local Machine
-checkExistence $_FOLDER $RES $BRANCH
-
 # Output folder under username
-OUTPUT="${REPO} (${BRANCH})"
+OUTPUT="${REPO} (${BRANCH})" # Output Folder
+checkExistence "${OUTPUT}"
 
 createDir "${_FOLDER}/${_DATAFOLDER}/${TMP}"
 createDir "${_FOLDER}/${USERNAME}/${OUTPUT}"
