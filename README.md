@@ -8,7 +8,7 @@ Clone Github repository in a manageable way
 - Clone Github repository without `.git` folder and save internet data charges.
 - Clone Github same repository from different branch
 - Direct pasting copied URL from browser to CLI
-- Clone your private repository using `-p` `-w` flags
+- Clone your private repository using `-w` flags
 ### Requirements
 - `git` CLI must be installed on machine.
 - Internet connection required.
@@ -21,7 +21,6 @@ Clone Github repository in a manageable way
 | :---:| :---: | :---: |
 | %URl% | Github repository to clone | Required |
 | -w | Clone with `.git` folder for later use | Optional |
-| -p | Required when cloning private repository | Optional|
 
 ## Notes:
 - Github token is required to clone repository with data and private repository.
@@ -31,10 +30,11 @@ Clone Github repository in a manageable way
 - Master/Main branch is default
 
 ```bash
-#No .git folder or git commit history
+# No .git folder or git commit history
 bash clone.sh https://github.com/jxmked/Repo_Clone 
-#Or
-#Download with .git folder or commit history. GITHUB TOKEN MUST EXISTING In CLONE.sh
+# Or
+# Download with .git folder or commit history.
+# It also allow to download private repository
 bash clone.sh https://github.com/jxmked/Repo_Clone -w
 ```
 
@@ -74,4 +74,4 @@ bash clone.sh https://github.com/jxmked/Repo_Clone -w
 - `mv`
 
 #### **Created with love and frustration** by [Jovan](https://facebook.com/deguia25)
-###### Model:SH-CSA-0004 - Advance Repository Cloner API
+###### Model:SH-CSA-0007 - Advance Repository Cloner API
