@@ -137,7 +137,7 @@ function createDir(){
 function onError(){
     echo -e "\e[1;31mSomething went wrong\e[0m"
     echo "Exiting..."
-    exit 1 #Terminate
+    exit 1
 }
 
 function checkExistence(){
@@ -160,7 +160,7 @@ if ! curl --output /dev/null --silent --head --fail "https://github.com/${RES}";
         echo "Maybe it is a private repository."
         echo "Use '-w' flag to clone" 
         echo "Exiting..."
-        exit 1 # Terminate
+        exit 1
     fi
     echo 'Cloning Private Repository...'
 else
@@ -177,8 +177,9 @@ createDir "${USERNAME}"
 cd "${_FOLDER}/${USERNAME}"
 cd "${_FOLDER}"
 
-# Output folder under username
 OUTPUT="${REPO} (${BRANCH})" # Output Folder
+
+# Check Directory existing or not empty
 checkExistence "${OUTPUT}"
 
 createDir "${_FOLDER}/${_DATAFOLDER}/${TMP}"
