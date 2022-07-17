@@ -225,11 +225,9 @@ mv -T "${F}" "${_FOLDER}/${USERNAME}/${OUTPUT}" || {
     onError 1; 
 }
 
-
 # Lets create Timestamp
 # User > Branch > Repository
 echo "$(date) | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/${_DATAFOLDER}/log.txt"
-
 
 echo
 
@@ -240,7 +238,7 @@ echo $USERNAME" > "$REPO
 
 echo "Directory: ${_FOLDER}/${USERNAME}/${OUTPUT}"
 
-printf "\n"
+echo
 
 # Developed with Love and Frustration by Jovan De Guia
 # License under MIT License
