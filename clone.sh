@@ -113,6 +113,8 @@ fi
 # Get Username, Repository Name and Branch
 BRANCH="master" #Default
 TR=""
+USERNAME=""
+REPO=""
 
 [[ "${a}" =~ github.com/([-[:alnum:]\+&@#%?=~_|!:,.;]*\/?){2,4} ]] && {
     USERNAME=$(echo $BASH_REMATCH | cut -d'/' -f 2) # Username
