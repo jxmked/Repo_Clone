@@ -142,34 +142,6 @@ function checkExistence(){
 BRANCH="master" #Default
 TR=""
 
-if [[ $(echo $_REPO | cut -d'/' -f 1) == 'https:' ]]; then 
-    USERNAME=$(echo $_REPO | cut -d'/' -f 4)
-    REPO=$(echo $_REPO | cut -d'/' -f 5)
-    
-    TR=$(echo $_REPO | cut -d'/' -f 6)
-    
-    #Check for branch
-    if [[ $TR == "tree" ]]; then
-        
-        cn=-1
-        IFS='/' read -ra TMPB <<< "$_REPO"
-        
-        for i in "${TMPB[@]}"; do
-            cn=$(($cn + ${#i} + 1))
-            if [[ $TR == $i ]]; then
-                BRANCH=${_REPO:($cn + 1)}
-                break
-            fi
-        done
-    fi
-else
-    USERNAME=$(echo $_REPO | cut -d'/' -f 1)
-    REPO=$(echo $_REPO | cut -d'/' -f 2)
-fi
-
-
-
-
 [[ "${a}" =~ github.com/([-[:alnum:]\+&@#%?=~_|!:,.;]*\/?){2,4} ]] && {
     USERNAME=$(echo $BASH_REMATCH | cut -d'/' -f 2) # Username
     REPO=$(echo $BASH_REMATCH | cut -d'/' -f 3) # Repository
