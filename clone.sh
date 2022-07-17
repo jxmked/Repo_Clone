@@ -14,9 +14,6 @@ TOKEN="<Your Github Token else cloning with data and private repo will not work>
 #Temporary folder
 TMP="tmp"
 
-USERNAME=""
-REPO=""
-
 # ----------------------------------------
 # Do we have a parameter?
 
