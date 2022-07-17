@@ -24,7 +24,7 @@ Clone Github repository in a manageable way
 | -p | Required when cloning private repository | Optional|
 
 ## Notes:
-- Github token is required to clone repository with `.git` folder.
+- Github token is required to clone repository with data and private repository.
 - Directory where downloaded files will go.
     - Must be change to already existing directory.
 - `log.txt` is stored in `.xio` folder.
