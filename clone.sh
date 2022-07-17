@@ -143,7 +143,7 @@ function onError(){
 function checkExistence(){
     
     if [[ -d "${1}" ]]; then
-        if [[ $(ls -A "${1}") ]]; then 
+        if [[ $(ls -A "${1}") == "" ]]; then 
             echo -e "\e[1;31mFailed: ${RES} does exists on local machine.\e[0m"
             echo "Exiting..."
             exit 1 # Terminate
