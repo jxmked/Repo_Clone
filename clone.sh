@@ -163,7 +163,7 @@ if ! curl --output /dev/null --silent --head --fail "https://github.com/${RES}";
     if [[ $WITH_DATA -eq 0 && $IS_PRIVATE -eq 0 ]]; then
         echo -e "\e[1;31mFailed: https://github.com/${RES} does not exists.\e[0m"
         echo "Maybe it is a private repository."
-        echo "Use '-w' flags to clone" 
+        echo "Use '-w' flag to clone" 
         echo "Exiting..."
         exit 1 #Terminate
     fi
