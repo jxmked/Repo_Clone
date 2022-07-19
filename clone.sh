@@ -289,7 +289,7 @@ rm -rf "${_FOLDER}/${_DATAFOLDER}/${TMP}"
 #du -hs "${_FOLDER}/${RES}"
 
 # Timestamp
-echo "$(date) | Clone | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/${_DATAFOLDER}/log.txt"
+echo "$(date) | Clone | ${USERNAME} > ${BRANCHp > ${REPO}" >> "${_FOLDER}/${_DATAFOLDER}/log.txt"
 echo
 echo "${USERNAME} > ${REPO}"
 echo "Directory: ${_FOLDER}/${USERNAME}/${OUTPUT}"
