@@ -10,6 +10,7 @@ Clone Github repository in a manageable way
 - Direct pasting copied URL from browser to CLI
 - Clone your private repository using `-w` flag
 - Pull Requests using `-p` flag
+
 ### Requirements
 - `git` CLI must be installed on machine.
 - Internet connection required.
@@ -75,4 +76,4 @@ bash clone.sh https://github.com/jxmked/Repo_Clone -w
 - `mv`
 
 #### **Created with love and frustration** by [Jovan](https://facebook.com/deguia25)
-###### Model:SH-CSA-0007 - Advance Repository Cloner API
+###### Model:SH-CSA-0009 - Advance Repository Cloner API
