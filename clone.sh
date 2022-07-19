@@ -11,9 +11,9 @@ _DATAFOLDER=".xio"
 
 TOKEN="<Token Here>"
 
-#Temporary folder
+# ----------------------------------------
+# Temporary Working folder
 TMP="tmp"
-
 # ----------------------------------------
 # Do we have a parameter?
 
@@ -86,11 +86,11 @@ function getFromArgs(){
     # @param 1st index -> Target
     # @param[] 2nd... index -> Search from array
     local KEY=$1
-    set -- "${@:2}" # Remove First Index
+    #set -- "${@:2}" # Remove First Index
     
     local found=0
     
-    for V in ${@}; do
+    for V in ${_ARGS[@]}; do
         if [[ "${V}" == "${KEY}" ]]; then
             found=1
             break
@@ -103,12 +103,27 @@ function getFromArgs(){
 # Get Flags if exists and change state
 
 WITH_DATA=0
-
+PULLREQUEST=0
+CLEARFS=0
 if [[ $_ARGS ]]; then
     # Need `.git` folder?
-    WITH_DATA=$(getFromArgs '-w' ${_ARGS[@]})
+    WITH_DATA=$(getFromArgs '-w')
+    PULLREQUEST=$(getFromArgs '-p')
+    CLEARFS=$(getFromArgs '-clear')
 fi
 
+# ----------------------------------------
+if [[ ${CLEARFS} == 1 ]]; then
+    echo "Clearing..."
+    echo
+    rm -rf "${_FOLDER}/${_DATAFOLDER}/${TMP}" || {
+        echo "Maybe its clear"
+        exit 0
+    }
+    
+    echo "Cleared"
+    exit 0
+fi
 # ----------------------------------------
 # Get Username, Repository Name and Branch
 BRANCH="master" #Default
@@ -141,13 +156,30 @@ function onError(){
     exit 1
 }
 
-function checkExistence(){
+function checkExistenceExit(){
     if [[ -d "${1}" ]]; then # Existing
         if [[ $(ls -A "${1}") ]]; then  # Folder not emoty
             echo -e "\e[1;31mFailed: ${RES} does exists on local machine.\e[0m"
+            echo "Use '-p' to pull (Update)"
             echo "Directory: ${1}"
             echo "Exiting..."
             exit 1
+        fi
+    fi
+}
+
+function checkExistencePull(){
+    if [[ -d "${1}" ]]; then # Existing
+        if [[ $(ls -A "${1}") ]]; then  # Folder not emoty
+            git config --global --add safe.directory "${1}" # Incase
+            
+            cd "${1}"
+            
+            if [[ "${2}" == "master" ]]; then
+                git pull origin || onError 1;
+            else
+                git pull "${2}" || onError 1; # Need Branch name
+            fi
         fi
     fi
 }
@@ -183,9 +215,37 @@ cd "${_FOLDER}/${USERNAME}"
 
 OUTPUT="${REPO} (${BRANCH})" # Output Folder
 
-# Check Directory existing or not empty
-checkExistence "${OUTPUT}"
+if [[ ${PULLREQUEST} == 1 ]]; then
+    
+    checkExistencePull "${OUTPUT}" "${BRANCH}"
+    
+    echo
+    echo "Pull Request"
+    echo "$(date) | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/${_DATAFOLDER}/log.txt"
+    
+    echo
+    
+    echo $USERNAME" > "$REPO
+    
+    echo "Directory: ${_FOLDER}/${USERNAME}/${OUTPUT}"
+    
+    printf "\n"
+    exit 0
+    
+else
+    # Check Directory existing or not empty
+    checkExistenceExit "${OUTPUT}"
+fi
 
+# ----------------------------------------
+# Create 32 hex char temp directory
+# Generate 32 char Uppercase Hex String
+
+RDM=$(hexdump -vn16 -e'4/4 "%08X" 1 "\n"' /dev/urandom)
+TMP="${TMP}/${RDM}"
+
+createDir "${_FOLDER}/${_DATAFOLDER}/${TMP}"
+# ----------------------------------------
 createDir "${_FOLDER}/${USERNAME}/${OUTPUT}"
 
 # Download files to tmp folder
@@ -225,9 +285,15 @@ mv -T "${F}" "${_FOLDER}/${USERNAME}/${OUTPUT}" || {
     onError 1; 
 }
 
+# ----------------------------------------
+# Delete Created random 32 hex char string 
+
+rm -rf "${_FOLDER}/${_DATAFOLDER}/${TMP}"
+# ----------------------------------------
 # Lets create Timestamp
 # User > Branch > Repository
 echo "$(date) | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/${_DATAFOLDER}/log.txt"
+
 
 echo
 
@@ -238,9 +304,9 @@ echo $USERNAME" > "$REPO
 
 echo "Directory: ${_FOLDER}/${USERNAME}/${OUTPUT}"
 
-echo
+printf "\n"
 
 # Developed with Love and Frustration by Jovan De Guia
 # License under MIT License
 # Github Username: jxmked
-# Model:SH-CSA-0007 - Advance Repository Cloner API
+# Model:SH-CSA-0009 - Advance Repository Cloner API
