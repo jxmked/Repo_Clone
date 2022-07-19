@@ -291,7 +291,7 @@ rm -rf "${_FOLDER}/${_DATAFOLDER}/${TMP}"
 # Timestamp
 echo "$(date) | Clone | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/${_DATAFOLDER}/log.txt"
 echo
-echo "${USERNAMEp > ${REPO}"
+echo "${USERNAME} > ${REPO}"
 echo "Directory: ${_FOLDER}/${USERNAME}/${OUTPUT}"
 
 printf "\n"
