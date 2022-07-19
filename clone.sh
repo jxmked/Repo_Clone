@@ -141,6 +141,8 @@ REPO=""
         TR=1
     }
 }
+
+RES="${USERNAME}/${REPO}"
 # ----------------------------------------
 
 function createDir(){
@@ -174,13 +176,15 @@ function checkExistencePull(){
             git config --global --add safe.directory "${1}" # Incase
             
             cd "${1}"
-            git branch -M "${BRANCH}" || onError 1
-            git pull origin || onError 1;
+            
+            if [[ "${BRANCH}" == "master" ]]; then
+                git pull "https://${TOKEN}@github.com/${USERNAME}/${REPO}" || onError 1
+            else
+                git pull "https://${TOKEN}@github.com/${USERNAME}/${REPO}" "${BRANCH}" || onError 1
+            fi
         fi
     fi
 }
-
-RES="${USERNAME}/${REPO}"
 
 # Check for existence of Github Repo
 if ! curl --output /dev/null --silent --head --fail "https://github.com/${RES}"; then
@@ -213,7 +217,7 @@ OUTPUT="${REPO} (${BRANCH})" # Output Folder
 
 if [[ ${PULLREQUEST} == 1 ]]; then
     
-    checkExistencePull "${OUTPUT}" "${BRANCH}"
+    checkExistencePull "${OUTPUT}" "${REPO}" "${BRANCH}"
     
     echo
     echo "Pull Request"
@@ -305,4 +309,4 @@ printf "\n"
 # Developed with Love and Frustration by Jovan De Guia
 # License under MIT License
 # Github Username: jxmked
-# Model:SH-CSA-0009 - Advance Repository Cloner API
+# Model:SH-CSA-0010 - Advance Repository Cloner API
