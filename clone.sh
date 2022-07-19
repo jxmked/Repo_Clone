@@ -287,14 +287,12 @@ rm -rf "${_FOLDER}/${_DATAFOLDER}/${TMP}"
 # User > Branch > Repository
 echo "$(date) | Clone | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/${_DATAFOLDER}/log.txt"
 
-
 echo
 
 #printf "Downloaded content size: "
 #du -hs "${_FOLDER}/${RES}"
 
 echo $USERNAME" > "$REPO
-
 echo "Directory: ${_FOLDER}/${USERNAME}/${OUTPUT}"
 
 printf "\n"
