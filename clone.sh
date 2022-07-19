@@ -283,14 +283,12 @@ mv -T "${F}" "${_FOLDER}/${USERNAME}/${OUTPUT}" || {
 
 rm -rf "${_FOLDER}/${_DATAFOLDER}/${TMP}"
 # ----------------------------------------
-# Lets create Timestamp
-# User > Branch > Repository
 
-echo
 
 #printf "Downloaded content size: "
 #du -hs "${_FOLDER}/${RES}"
 
+# Timestamp
 echo "$(date) | Clone | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/${_DATAFOLDER}/log.txt"
 echo
 echo $USERNAME" > "$REPO
