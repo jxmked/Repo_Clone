@@ -23,7 +23,7 @@ Clone Github repository in a manageable way
 | :---:| :---: | :---: |
 | %URl% | Github repository to clone | Required |
 | -w | Clone with `.git` folder for later use | Optional |
-| -p | Pull (Update) Existing Directory from Github Repository | Optional |
+| -p | Pull (Update) Existing Repository in your local machine from Github Repository | Optional |
 | -clear | Clear Temporary Folder | Optional |
 
 ## Notes:
