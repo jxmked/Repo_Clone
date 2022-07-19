@@ -174,7 +174,7 @@ function checkExistencePull(){
             git config --global --add safe.directory "${1}" # Incase
             
             cd "${1}"
-            
+            git branch -M "${BRANCH}" || onError 1
             git pull origin || onError 1;
         fi
     fi
@@ -213,7 +213,7 @@ OUTPUT="${REPO} (${BRANCH})" # Output Folder
 
 if [[ ${PULLREQUEST} == 1 ]]; then
     
-    checkExistencePull "${OUTPUT}"
+    checkExistencePull "${OUTPUT}" "${BRANCH}"
     
     echo
     echo "Pull Request"
