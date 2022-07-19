@@ -9,7 +9,7 @@ Clone Github repository in a manageable way
 - Clone Github same repository from different branch
 - Direct pasting copied URL from browser to CLI
 - Clone your private repository using `-w` flag
-- Pull (Update) using `-p` flag
+- Pull (Update) using `-p` flag (git pull origin)
 
 ### Requirements
 - `git` CLI must be installed on machine.
