@@ -13,7 +13,7 @@ Clone Github repository in a manageable way
 
 ### Requirements
 - `git` CLI must be installed on machine.
-- Internet connection required.
+- Internet connection required. 
 
 ### Installation and Use
 [Download](https://github.com/jxmked/Repo_Clone) and run `bash clone.sh <github repository url> [-w]`
