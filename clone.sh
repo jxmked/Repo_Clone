@@ -1,16 +1,3 @@
-#!/bin/bash
-
-# Developed by Jovan De Guia.
-# License Under MIT License
-
-#Downloaded files will go here
-# Change This Directory to your existing Working Directory
-_FOLDER='/storage/emulated/0/@webpage/git clone'
-
-_DATAFOLDER=".xio"
-
-TOKEN="<Token Here>"
-
 # ----------------------------------------
 # Temporary Working folder
 TMP="tmp"
@@ -173,6 +160,12 @@ function checkExistenceExit(){
 function checkExistencePull(){
     if [[ -d "${1}" ]]; then # Existing
         if [[ $(ls -A "${1}") ]]; then  # Folder not emoty
+            # Check if '.git' folder exists
+            if [[ ! -d "${1}/.git" ]]; then
+                echo "No Git Data Has been Found."
+                echo "Tip: Delete The Folder Download It again with '-w' flag"
+                exit 0
+            fi
             git config --global --add safe.directory "${1}" # Incase
             
             cd "${1}"
@@ -196,9 +189,9 @@ if ! curl --output /dev/null --silent --head --fail "https://github.com/${RES}";
         echo "Exiting..."
         exit 1
     fi
-    echo 'Cloning Private Repository...'
+    echo 'Private Repository...'
 else
-    echo "Cloning Public Repository..."
+    echo "Public Repository..."
 fi
 
 printf "\n"
