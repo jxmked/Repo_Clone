@@ -221,7 +221,7 @@ if [[ ${PULLREQUEST} == 1 ]]; then
     
     echo
     echo "Pull Request"
-    echo "$(date) | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/${_DATAFOLDER}/log.txt"
+    echo "$(date) | Pull | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/${_DATAFOLDER}/log.txt"
     
     echo
     
@@ -292,7 +292,7 @@ rm -rf "${_FOLDER}/${_DATAFOLDER}/${TMP}"
 # ----------------------------------------
 # Lets create Timestamp
 # User > Branch > Repository
-echo "$(date) | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/${_DATAFOLDER}/log.txt"
+echo "$(date) | Clone | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/${_DATAFOLDER}/log.txt"
 
 
 echo
