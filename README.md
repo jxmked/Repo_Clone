@@ -9,7 +9,7 @@ Clone Github repository in a manageable way
 - Clone Github same repository from different branch
 - Direct pasting copied URL from browser to CLI
 - Clone your private repository using `-w` flag
-- Pull using `-p` flag
+- Pull (Update) using `-p` flag
 
 ### Requirements
 - `git` CLI must be installed on machine.
@@ -23,7 +23,8 @@ Clone Github repository in a manageable way
 | :---:| :---: | :---: |
 | %URl% | Github repository to clone | Required |
 | -w | Clone with `.git` folder for later use | Optional |
-| -p | Create 
+| -p | Pull (Update) Existing Directory from Github Repository | Optional |
+| -clear | Clear Temporary Folder | Optional |
 
 ## Notes:
 - Github token is required to clone repository with data and private repository.
