@@ -175,11 +175,7 @@ function checkExistencePull(){
             
             cd "${1}"
             
-            if [[ "${2}" == "master" ]]; then
-                git pull origin || onError 1;
-            else
-                git pull "${2}" || onError 1; # Need Branch name
-            fi
+            git pull origin || onError 1;
         fi
     fi
 }
@@ -217,7 +213,7 @@ OUTPUT="${REPO} (${BRANCH})" # Output Folder
 
 if [[ ${PULLREQUEST} == 1 ]]; then
     
-    checkExistencePull "${OUTPUT}" "${BRANCH}"
+    checkExistencePull "${OUTPUT}"
     
     echo
     echo "Pull Request"
