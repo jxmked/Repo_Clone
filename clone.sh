@@ -237,19 +237,20 @@ else
 fi
 
 # ----------------------------------------
-# Create 32 hex char temp directory
+# Create 32 hex char temp string
 # Generate 32 char Uppercase Hex String
 
 RDM=$(hexdump -vn16 -e'4/4 "%08X" 1 "\n"' /dev/urandom)
 TMP="${TMP}/${RDM}"
-
+# ----------------------------------------
+# Create Temporary Folder
 createDir "${_FOLDER}/${_DATAFOLDER}/${TMP}"
 # ----------------------------------------
 createDir "${_FOLDER}/${USERNAME}/${OUTPUT}"
-
+# ----------------------------------------
 # Download files to tmp folder
 cd "${_FOLDER}/${_DATAFOLDER}/${TMP}"
-    
+# ----------------------------------------
 # Begin Cloning With Specific Parameters
 if [[ $WITH_DATA -eq 1 ]]; then
     # When cloning with data
