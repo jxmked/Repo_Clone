@@ -130,20 +130,23 @@ REPO="" # Github Repository
 # ----------------------------------------
 RES="${USERNAME}/${REPO}"
 # ----------------------------------------
-
+# Create Directory If not exists
 function createDir(){
     #Create if when not exists
     if [[ ! -d "${1}" ]]; then
         mkdir "${1}"
     fi
 }
-
+# ----------------------------------------
+# Print and Exit on Error
 function onError(){
     echo -e "\e[1;31mSomething went wrong\e[0m"
     echo "Exiting..."
     exit 1
 }
-
+# ----------------------------------------
+# Check if repository already existing.
+# If existing, exit
 function checkExistenceExit(){
     if [[ -d "${1}" ]]; then # Existing
         if [[ $(ls -A "${1}") ]]; then  # Folder not emoty
@@ -177,7 +180,7 @@ function checkExistencePull(){
         fi
     fi
 }
-
+# ----------------------------------------
 # Check for existence of Github Repo
 if ! curl --output /dev/null --silent --head --fail "https://github.com/${RES}"; then
     # If were cloning private repository, the code above will fail
