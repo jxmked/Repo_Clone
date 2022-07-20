@@ -158,7 +158,10 @@ function checkExistenceExit(){
         fi
     fi
 }
-
+# ----------------------------------------
+# If `-p` flag is on. Pull (update) already existing repository
+# to your local machine. (Only works if the repository has been
+# downloaded with git data)
 function checkExistencePull(){
     if [[ -d "${1}" ]]; then # Existing
         if [[ $(ls -A "${1}") ]]; then  # Folder not emoty
@@ -195,17 +198,18 @@ if ! curl --output /dev/null --silent --head --fail "https://github.com/${RES}";
 else
     echo "Public Repository..."
 fi
-
+# ----------------------------------------
 printf "\n"
-
+# ----------------------------------------
 cd "${_FOLDER}"
-
+# ----------------------------------------
 # Create System Directory
 createDir "${_FOLDER}/${_DATAFOLDER}"
 createDir "${_FOLDER}/${_DATAFOLDER}/${TMP}"
-
+# ----------------------------------------
+# Create Github Repository Folder
 createDir "${USERNAME}"
-
+# ----------------------------------------
 cd "${_FOLDER}/${USERNAME}"
 
 OUTPUT="${REPO} (${BRANCH})" # Output Folder
