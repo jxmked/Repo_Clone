@@ -210,14 +210,18 @@ createDir "${_FOLDER}/${_DATAFOLDER}/${TMP}"
 # Create Github Username Folder
 createDir "${USERNAME}"
 # ----------------------------------------
+# Chnage current directory to parent Repository folder
 cd "${_FOLDER}/${USERNAME}"
-
+# ----------------------------------------
+# Create Output Folder
 OUTPUT="${REPO} (${BRANCH})" # Output Folder
-
+# ----------------------------------------
+# Check if we'rr about to pull or clone via `-p` flag
 if [[ ${PULLREQUEST} == 1 ]]; then
-    
+# ----------------------------------------
+    # Begin Checking and Pull
     checkExistencePull "${OUTPUT}" "${REPO}" "${BRANCH}"
-    
+# ----------------------------------------
     echo
     echo "Pull Request"
     echo "$(date) | Pull | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/${_DATAFOLDER}/log.txt"
@@ -229,6 +233,8 @@ if [[ ${PULLREQUEST} == 1 ]]; then
     echo "Directory: ${_FOLDER}/${USERNAME}/${OUTPUT}"
     
     printf "\n"
+# ----------------------------------------
+    
     exit 0
     
 else
