@@ -164,17 +164,24 @@ function checkExistenceExit(){
 # downloaded with git data)
 function checkExistencePull(){
     if [[ -d "${1}" ]]; then # Existing
-        if [[ $(ls -A "${1}") ]]; then  # Folder not emoty
+# ----------------------------------------
+        # Is folder is not empty?
+        if [[ $(ls -A "${1}") ]]; then
+# ----------------------------------------
             # Check if '.git' folder exists
             if [[ ! -d "${1}/.git" ]]; then
                 echo "No Git Data Has been Found."
                 echo "Tip: Delete The Folder Download It again with '-w' flag"
                 exit 0
             fi
+# ----------------------------------------
+            # Set our current directory as safe
             git config --global --add safe.directory "${1}" # Incase
-            
+# ----------------------------------------
             cd "${1}"
-            
+# ----------------------------------------
+            # We cannot put 'master' in url, it creates an error if we have different master name
+            # Do we have different branch?
             if [[ "${BRANCH}" == "master" ]]; then
                 git pull "https://${TOKEN}@github.com/${USERNAME}/${REPO}" || onError 1
             else
@@ -243,7 +250,6 @@ else
     # Check Directory existing or not empty
     checkExistenceExit "${OUTPUT}"
 fi
-
 # ----------------------------------------
 # Create 32 hex char temp string
 # Generate 32 char Uppercase Hex String
