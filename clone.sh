@@ -31,7 +31,6 @@ function getURLIndex(){
         ((index++))
     done
 }
-
 # ----------------------------------------
 # Re-create parameters
 params=()
@@ -51,7 +50,7 @@ fi
 _REPO=("${params[$index]}") # REPO
 
 # ----------------------------------------
-# Pop valid url from Parameters
+# Pop valid url from Arguments
 new_arr=()
 for val in ${params[@]}; do
     if [[ ! "${val}" == "${_REPO}" ]]; then
@@ -62,16 +61,12 @@ done
 _ARGS=( "${new_arr[@]}" )
 unset new_arr
 
-# I Re-create the array to make sure their is no gap
-
+# I Re-create the array to make sure their is no gap (empty value)
 # ----------------------------------------
-
-# Build the function if have a valid Url
 # For Faster Performance
 
 function getFromArgs(){
     # @param 1st index -> Target
-    # @param[] 2nd... index -> Search from array
     local KEY=$1
     #set -- "${@:2}" # Remove First Index
     
@@ -85,7 +80,6 @@ function getFromArgs(){
     done
     echo $found
 }
-
 # ----------------------------------------
 # Get Flags if exists and change state
 
@@ -100,6 +94,7 @@ if [[ $_ARGS ]]; then
 fi
 
 # ----------------------------------------
+# Clear Temporary Folder
 if [[ ${CLEARFS} == 1 ]]; then
     echo "Clearing..."
     echo
@@ -112,12 +107,15 @@ if [[ ${CLEARFS} == 1 ]]; then
     exit 0
 fi
 # ----------------------------------------
-# Get Username, Repository Name and Branch
-BRANCH="master" #Default
-TR=0
-USERNAME=""
-REPO=""
+# Define Target Github Repository
 
+# Some branches has different master branch name.
+# So, it may return an issue where wrong branch has been worked on
+BRANCH="master" # Default
+TR=0 # Has branch included in URL?
+USERNAME="" # Github Username
+REPO="" # Github Repository
+# ----------------------------------------
 [[ "${_REPO}" =~ github.com/([-[:alnum:]\+&@#%?=~_|!:,.;]*\/?){2,} ]] && {
     USERNAME=$(echo $BASH_REMATCH | cut -d'/' -f 2) # Username
     REPO=$(echo $BASH_REMATCH | cut -d'/' -f 3) # Repository
