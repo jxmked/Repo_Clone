@@ -92,7 +92,6 @@ if [[ $_ARGS ]]; then
     PULLREQUEST=$(getFromArgs '-p')
     CLEARFS=$(getFromArgs '-clear')
 fi
-
 # ----------------------------------------
 # Clear Temporary Folder
 if [[ ${CLEARFS} == 1 ]]; then
