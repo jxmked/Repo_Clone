@@ -283,38 +283,38 @@ else
     echo -e "\e[1;32mCloned without data\e[0m"
 # ----------------------------------------
 fi
-
+# ----------------------------------------
 # Move downloaded folder to...
 F="${_FOLDER}/${_DATAFOLDER}/${TMP}/$(ls)"
-    
+# ----------------------------------------
+# Check if we have downloaded contents
 if [[ ! -d "${F}" ]]; then
     onError 1
 fi
-
-# Desired location
+# ----------------------------------------
+# Kove the downloaded contents to Desired location
 mv -T "${F}" "${_FOLDER}/${USERNAME}/${OUTPUT}" || {
     echo -e "\e[1;31mCheck tmp folder\e[0m"
     onError 1; 
 }
-
 # ----------------------------------------
 # Delete Created random 32 hex char string 
-
 rm -rf "${_FOLDER}/${_DATAFOLDER}/${TMP}"
 # ----------------------------------------
-
-
+# Print the downloaded content size
+# Currently, this shows a different numbers. 
 #printf "Downloaded content size: "
 #du -hs "${_FOLDER}/${RES}"
-
+# ----------------------------------------
 # Timestamp
 echo "$(date) | Clone | ${USERNAME} > ${BRANCH} > ${REPO}" >> "${_FOLDER}/${_DATAFOLDER}/log.txt"
+# ----------------------------------------
 echo
 echo "${USERNAME} > ${REPO}"
 echo "Directory: ${_FOLDER}/${USERNAME}/${OUTPUT}"
 
 printf "\n"
-
+# ----------------------------------------
 # Developed with Love and Frustration by Jovan De Guia
 # License under MIT License
 # Github Username: jxmked
