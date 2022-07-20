@@ -246,6 +246,7 @@ TMP="${TMP}/${RDM}"
 # Create Temporary Folder
 createDir "${_FOLDER}/${_DATAFOLDER}/${TMP}"
 # ----------------------------------------
+# Create Repository Folder under Username
 createDir "${_FOLDER}/${USERNAME}/${OUTPUT}"
 # ----------------------------------------
 # Download files to tmp folder
@@ -255,7 +256,7 @@ cd "${_FOLDER}/${_DATAFOLDER}/${TMP}"
 if [[ $WITH_DATA -eq 1 ]]; then
     # When cloning with data
     if [[ ${TR} -eq 0 ]]; then
-        # I'm still looking for the best to get the main branch name from github
+        # I'm still looking for the best to get the main branch name from github.
         # Without defined branch
         git clone "https://${TOKEN}@github.com/${RES}" || { onError 1; }
     else
