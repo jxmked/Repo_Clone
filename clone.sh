@@ -116,6 +116,7 @@ TR=0 # Has branch included in URL?
 USERNAME="" # Github Username
 REPO="" # Github Repository
 # ----------------------------------------
+# Export Information fron given URL
 [[ "${_REPO}" =~ github.com/([-[:alnum:]\+&@#%?=~_|!:,.;]*\/?){2,} ]] && {
     USERNAME=$(echo $BASH_REMATCH | cut -d'/' -f 2) # Username
     REPO=$(echo $BASH_REMATCH | cut -d'/' -f 3) # Repository
@@ -126,7 +127,7 @@ REPO="" # Github Repository
         TR=1
     }
 }
-
+# ----------------------------------------
 RES="${USERNAME}/${REPO}"
 # ----------------------------------------
 
