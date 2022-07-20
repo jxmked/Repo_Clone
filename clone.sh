@@ -187,7 +187,9 @@ function checkExistencePull(){
             else
                 git pull "https://${TOKEN}@github.com/${USERNAME}/${REPO}" "${BRANCH}" || onError 1
             fi
+# ----------------------------------------
         fi
+# ----------------------------------------
     fi
 }
 # ----------------------------------------
