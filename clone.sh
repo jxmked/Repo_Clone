@@ -222,6 +222,7 @@ if [[ ${PULLREQUEST} == 1 ]]; then
     # Begin Checking and Pull
     checkExistencePull "${OUTPUT}" "${REPO}" "${BRANCH}"
 # ----------------------------------------
+    # Some stats
     echo
     echo "Pull Request"
     echo "$(date) | Pull | $USERNAME > $BRANCH > $REPO" >> "$_FOLDER/${_DATAFOLDER}/log.txt"
@@ -236,8 +237,9 @@ if [[ ${PULLREQUEST} == 1 ]]; then
 # ----------------------------------------
     
     exit 0
-    
+# ----------------------------------------
 else
+# ----------------------------------------
     # Check Directory existing or not empty
     checkExistenceExit "${OUTPUT}"
 fi
@@ -261,6 +263,8 @@ cd "${_FOLDER}/${_DATAFOLDER}/${TMP}"
 # Begin Cloning With Specific Parameters
 if [[ $WITH_DATA -eq 1 ]]; then
     # When cloning with data
+# ----------------------------------------
+    # Do we have a custom branch to clone?
     if [[ ${TR} -eq 0 ]]; then
         # I'm still looking for the best to get the main branch name from github.
         # Without defined branch
@@ -270,13 +274,14 @@ if [[ $WITH_DATA -eq 1 ]]; then
     fi
     
     echo -e "\e[1;32mCloned with data\e[0m"
+# ----------------------------------------
 else
+# ----------------------------------------
     # Download Repo without .git folder
-    
-    # Init download
     curl -L "https://github.com/${RES}/tarball/${BRANCH}" | tar xz || { onError 1; }
-    
+# ----------------------------------------
     echo -e "\e[1;32mCloned without data\e[0m"
+# ----------------------------------------
 fi
 
 # Move downloaded folder to...
