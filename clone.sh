@@ -1,3 +1,14 @@
+#!/bin/bash
+
+# ----------------------------------------
+#Downloaded files will go here
+# Change This Directory to your existing Working Directory
+_FOLDER='/storage/emulated/0/@webpage/git clone'
+_DATAFOLDER=".xio"
+# ----------------------------------------
+# Change this if wan't to use to clone with data
+# Also for updating your copy of Repository 
+TOKEN="<Token Here>"
 # ----------------------------------------
 # Temporary Working folder
 TMP="tmp"
