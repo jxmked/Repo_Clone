@@ -19,7 +19,6 @@ if [[ ! $1 ]]; then
     echo "No parameter found"
     exit 1
 fi
-
 # ----------------------------------------
 # Get URL Index from arguments
 function getURLIndex(){
