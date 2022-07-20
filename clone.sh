@@ -207,7 +207,7 @@ cd "${_FOLDER}"
 createDir "${_FOLDER}/${_DATAFOLDER}"
 createDir "${_FOLDER}/${_DATAFOLDER}/${TMP}"
 # ----------------------------------------
-# Create Github Repository Folder
+# Create Github Username Folder
 createDir "${USERNAME}"
 # ----------------------------------------
 cd "${_FOLDER}/${USERNAME}"
