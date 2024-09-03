@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize)]
 pub struct Dir {
   path: String,
-}
+} 
 
 impl Dir {
   pub fn new(path: String) -> Self {
