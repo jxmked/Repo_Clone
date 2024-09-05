@@ -1,8 +1,15 @@
+#![feature(fs_try_exists)]
+
+
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::env;
+use std::io;
+use std::path::PathBuf;
+use std::path::Path;
 
 use std::ops::Not;
+
 
 // https://play.rust-lang.org/?version=stable&mode=debug&edition=2015&gist=1434052276de34362138cba939f6967a
 fn not<T: Not>(x: T) -> <T as Not>::Output {
@@ -19,16 +26,15 @@ lazy_static! {
     static ref R_GITHUB_REPO_C: Regex = Regex::new(r"(\/[a-zA-Z\-\_0-9]+){2,9}(\.git)?$").unwrap();
 }
 
-// fn print_help() {
-//     println!("\nx-clone requires parameters");
-//     println!("  $ x-clone <git repo url>\n");
-//     println!("Optional");
-//     println!("  -w   :   With git data. (False by default)");
-//     println!("  -p   :   Do pull request with existing repo.");
-//     println!("       :   Only works if the repo has been cloned with git data.");
-//     println!("\n");
-
-// }
+fn print_help() {
+    println!("\nx-clone requires parameters");
+    println!("  $ x-clone <git repo url>\n");
+    println!("Optional");
+    println!("  -w   :   With git data. (False by default)");
+    println!("  -p   :   Do pull request with existing repo.");
+    println!("       :   Only works if the repo has been cloned with git data.");
+    println!("\n");
+}
 
 fn is_flag(v: &str) -> bool {
     return R_IS_FLAG.is_match(v);
@@ -48,10 +54,55 @@ fn is_git_url(v: &str) -> bool {
     true
 }
 
+fn get_config_file() -> io::Result<PathBuf> {
+    let mut dir = env::current_exe()?;
+    dir.pop();
+    // dir.push("config");
+    dir.push("ini.io");
+    Ok(dir)
+}
+
+
+
 fn main() {
+    // let path = inner_main().expect("Couldn't");
+    // println!("{}", path.display());
+
     let args: Vec<_> = env::args().collect();
+    let mut index = 0;
 
     for e in &args {
-        println!("{} : {}", e, is_git_url(e));
+        index += 1;
+
+        if e == "set" {
+             if not(args.len() > 2) {
+                // Do print help and exit
+                print_help();
+                std::process::exit(1);
+            }
+
+            if args[index] == "output_folder" {
+                // Do set output folder
+
+                // Get executable path
+                // Check if config exists
+
+
+                // If not create one (json type)
+                // If exists, update.
+                //  x-clone.d
+
+                let pp = get_config_file().expect("shutdown");
+
+                if Path::new(&pp).is_file() {
+                    println!("Modify");
+                } else {
+                    println!("Create");
+                }
+
+                println!("Set Output folder")
+            }
+        }
+
     }
 }
