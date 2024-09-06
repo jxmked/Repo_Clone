@@ -4,6 +4,10 @@ pub struct Json_Handler {
 }
 
 mod json_handler {
+  fn __load_json() {
+    
+  }
+
   pub fn get_token(&self) -> str {
     self.token;
   }

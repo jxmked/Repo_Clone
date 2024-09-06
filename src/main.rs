@@ -8,13 +8,11 @@ use std::io;
 use std::path::PathBuf;
 use std::path::Path;
 
-use std::ops::Not;
+mod util;
 
 
-// https://play.rust-lang.org/?version=stable&mode=debug&edition=2015&gist=1434052276de34362138cba939f6967a
-fn not<T: Not>(x: T) -> <T as Not>::Output {
-    Not::not(x)
-}
+
+
 
 // https://github.com/jxmked/Repo_Clone
 // https://github.com/jxmked/Repo_Clone/tree/gh-pages
@@ -41,13 +39,13 @@ fn is_flag(v: &str) -> bool {
 }
 
 fn is_git_url(v: &str) -> bool {
-    if not(R_GITHUB_REPO_A.is_match(v)) {
+    if util::not(R_GITHUB_REPO_A.is_match(v)) {
         return false;
     }
-    if not(R_GITHUB_REPO_B.is_match(v)) {
+    if util::not(R_GITHUB_REPO_B.is_match(v)) {
         return false;
     }
-    if not(R_GITHUB_REPO_C.is_match(v)) {
+    if util::not(R_GITHUB_REPO_C.is_match(v)) {
         return false;
     }
 
@@ -75,7 +73,7 @@ fn main() {
         index += 1;
 
         if e == "set" {
-             if not(args.len() > 2) {
+             if util::not(args.len() > 2) {
                 // Do print help and exit
                 print_help();
                 std::process::exit(1);
