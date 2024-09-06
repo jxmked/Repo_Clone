@@ -1,14 +1,17 @@
-#![feature(fs_try_exists)]
 
 
+mod config_file_rw;
+mod util;
+
+
+use config_file_rw::read_json_file;
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::env;
 use std::io;
-use std::path::PathBuf;
-use std::path::Path;
+use std::path::{PathBuf,Path};
 
-mod util;
+
 
 
 
@@ -55,7 +58,6 @@ fn is_git_url(v: &str) -> bool {
 fn get_config_file() -> io::Result<PathBuf> {
     let mut dir = env::current_exe()?;
     dir.pop();
-    // dir.push("config");
     dir.push("ini.io");
     Ok(dir)
 }
@@ -63,44 +65,46 @@ fn get_config_file() -> io::Result<PathBuf> {
 
 
 fn main() {
+
+    read_json_file();
     // let path = inner_main().expect("Couldn't");
     // println!("{}", path.display());
 
-    let args: Vec<_> = env::args().collect();
-    let mut index = 0;
+    // let args: Vec<_> = env::args().collect();
+    // let mut index = 0;
 
-    for e in &args {
-        index += 1;
+    // for e in &args {
+    //     index += 1;
 
-        if e == "set" {
-             if util::not(args.len() > 2) {
-                // Do print help and exit
-                print_help();
-                std::process::exit(1);
-            }
+    //     if e == "set" {
+    //          if util::not(args.len() > 2) {
+    //             // Do print help and exit
+    //             print_help();
+    //             std::process::exit(1);
+    //         }
 
-            if args[index] == "output_folder" {
-                // Do set output folder
+    //         if args[index] == "output_folder" {
+    //             // Do set output folder
 
-                // Get executable path
-                // Check if config exists
+    //             // Get executable path
+    //             // Check if config exists
 
 
-                // If not create one (json type)
-                // If exists, update.
-                //  x-clone.d
+    //             // If not create one (json type)
+    //             // If exists, update.
+    //             //  x-clone.d
 
-                let pp = get_config_file().expect("shutdown");
+    //             let pp = get_config_file().expect("shutdown");
 
-                if Path::new(&pp).is_file() {
-                    println!("Modify");
-                } else {
-                    println!("Create");
-                }
+    //             if Path::new(&pp).is_file() {
+    //                 println!("Modify");
+    //             } else {
+    //                 println!("Create");
+    //             }
 
-                println!("Set Output folder")
-            }
-        }
+    //             println!("Set Output folder")
+    //         }
+    //     }
 
-    }
+    // }
 }
