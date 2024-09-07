@@ -66,7 +66,9 @@ fn get_config_file() -> io::Result<PathBuf> {
 
 fn main() {
 
-    read_json_file();
+    let res = read_json_file().expect("asdasd");
+
+    println!("{}", res.token);
     // let path = inner_main().expect("Couldn't");
     // println!("{}", path.display());
 
