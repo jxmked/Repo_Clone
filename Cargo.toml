@@ -1,0 +1,11 @@
+[package]
+name = "x-clone"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+lazy_static = "1.5.0"
+regex = "1.10.6"
+serde = "1.0.209"
+serde_derive = "1.0.209"
+serde_json = "1.0.128"
