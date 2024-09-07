@@ -10,7 +10,7 @@ pub fn not<T: Not>(x: T) -> <T as Not>::Output {
 
 pub fn read_file(file_path: &str) -> String {
 
-  __create_if_not_exists(file_path);
+  create_if_not_exists(file_path);
 
   let mut file = File::open(file_path).unwrap();
   let mut contents = String::new();
@@ -20,14 +20,18 @@ pub fn read_file(file_path: &str) -> String {
 }
 
 pub fn write_file(file_path: &str, contents: &str) {
-  __create_if_not_exists(file_path);
+  create_if_not_exists(file_path);
 
   let mut file = File::create(file_path).unwrap();
   file.write_all(contents.as_bytes()).expect("Failed to write file");
 }
 
-fn __create_if_not_exists(file_path: &str) {
-  if !Path::new(file_path).is_file() {
+pub fn create_if_not_exists(file_path: &str) {
+  if !file_exists(file_path) {
       File::create(file_path).expect("Failed to create file");
   }
+}
+
+pub fn file_exists(file_path: &str ) -> bool {
+  Path::new(file_path).is_file()
 }
