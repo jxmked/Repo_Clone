@@ -1,3 +1,4 @@
+use crate::config_file_rw as conf_rw;
 use crate::r_patten_func;
 
 use std::path::Path;
@@ -18,7 +19,7 @@ pub fn output_folder(folder_path: &str) {
   let given_path = r_patten_func::R_REMOVE_QOUTES
     .replace_all(&folder_path, "")
     .to_string();
-  let pp = Path::new(&given_path);
+  let pp: &Path = Path::new::<str>(&given_path);
   let mut has_error = false;
 
   println!(r#"  Path: '{}'"#, pp.display());
@@ -37,8 +38,17 @@ pub fn output_folder(folder_path: &str) {
   }
 
   if has_error {
+    println!("\n\tSetting did not set. Exiting...\n");
     std::process::exit(1);
   }
+
+  let mut conf_r = conf_rw::read_json_file().unwrap();
+
+  conf_r.output_path = given_path;
+
+  
+
+  conf_rw::write_json_file(conf_r);
 
   println!("Set Output folder");
 }

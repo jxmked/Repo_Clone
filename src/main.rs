@@ -3,6 +3,8 @@ mod r_patten_func;
 mod set_config;
 mod util;
 
+mod constants;
+
 use crate::set_config::output_folder as set_conf;
 
 use std::env;
