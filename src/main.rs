@@ -5,7 +5,7 @@ mod util;
 
 mod constants;
 
-use crate::set_config::output_folder as set_conf;
+use crate::set_config as set_conf;
 
 use std::env;
 
@@ -49,8 +49,12 @@ fn main() {
       }
 
       if args[i + 1] == "output_folder" {
-        set_conf::output_folder(&args[i + 2]);
+        set_conf::output_folder::output_folder(&args[i + 2]);
+      } else if args[i + 1] == "token" {
+        set_conf::token::token(&args[i + 2]);
       }
     }
   }
+
+  
 }

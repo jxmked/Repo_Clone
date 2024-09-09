@@ -46,9 +46,7 @@ pub fn output_folder(folder_path: &str) {
 
   conf_r.output_path = given_path;
 
-  
+  let _ = conf_rw::write_json_file(conf_r);
 
-  conf_rw::write_json_file(conf_r);
-
-  println!("Set Output folder");
+  println!("\nFolder has been set!");
 }
