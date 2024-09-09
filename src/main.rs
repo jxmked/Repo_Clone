@@ -16,6 +16,7 @@ lazy_static! {
   static ref R_GITHUB_REPO_A: Regex = Regex::new(r"^(https?\:\/\/)(www)?").unwrap();
   static ref R_GITHUB_REPO_B: Regex = Regex::new(r"(github\.com)(\/[\w\-\_0-9]{1,39})").unwrap();
   static ref R_GITHUB_REPO_C: Regex = Regex::new(r"(\/[a-zA-Z\-\_0-9]+){2,9}(\.git)?$").unwrap();
+  static ref R_REMOVE_QOUTES: Regex = Regex::new(r#"("|')"#).unwrap();
 }
 
 fn print_help() {
@@ -40,13 +41,13 @@ fn is_flag(v: &str) -> bool {
 }
 
 fn is_git_url(v: &str) -> bool {
-  if util::not(R_GITHUB_REPO_A.is_match(v)) {
+  if !R_GITHUB_REPO_A.is_match(v) {
     return false;
   }
-  if util::not(R_GITHUB_REPO_B.is_match(v)) {
+  if !R_GITHUB_REPO_B.is_match(v) {
     return false;
   }
-  if util::not(R_GITHUB_REPO_C.is_match(v)) {
+  if !R_GITHUB_REPO_C.is_match(v) {
     return false;
   }
 
@@ -84,11 +85,21 @@ fn main() {
         // If exists, update.
         //  x-clone.d
 
-        let given_path = &args[i + 2];
+        let given_path = R_REMOVE_QOUTES.replace_all(&args[i + 2], "").to_string();
+        let pp = Path::new(&given_path);
 
         // Validate given path.
         //    must be absolute.
         //    must already exists
+        println!("{}", pp.display());
+
+        if pp.is_absolute() {
+          println!("Absolute Path");
+        }
+
+        if pp.is_dir() {
+          println!("Valid Directory");
+        }
 
         println!("Set Output folder");
       }
