@@ -8,12 +8,18 @@ pub fn token(gh_token: &str) {
     .replace_all(&gh_token, "")
     .to_string();
 
-    // let mut has_error = false;
+  let mut has_error = false;
 
-  // if has_error {
-  //   println!("\n\tSetting did not set. Exiting...\n");
-  //   std::process::exit(1);
-  // }
+  if !r_patten_func::is_git_pat(gh_token) {
+    has_error = true;
+
+    println!("Token must be a classic type token and valid.");
+  }
+
+  if has_error {
+    println!("\n\tSetting did not set. Exiting...\n");
+    std::process::exit(1);
+  }
 
   let mut conf_r = conf_rw::read_json_file().unwrap();
 
