@@ -4,11 +4,11 @@ use crate::r_patten_func;
 pub fn token(gh_token: &str) {
   println!("\nSetting token to clone your private repo and do pull-push :)");
 
-  let trimmed_token = r_patten_func::R_REMOVE_QOUTES
+  let trimmed_token: String = r_patten_func::R_REMOVE_QOUTES
     .replace_all(&gh_token, "")
     .to_string();
 
-  let mut has_error = false;
+  let mut has_error: bool = false;
 
   if !r_patten_func::is_git_pat(gh_token) {
     has_error = true;
@@ -21,7 +21,7 @@ pub fn token(gh_token: &str) {
     std::process::exit(1);
   }
 
-  let mut conf_r = conf_rw::read_json_file().unwrap();
+  let mut conf_r: conf_rw::JSONConfig = conf_rw::read_json_file().unwrap();
 
   conf_r.token = trimmed_token;
 

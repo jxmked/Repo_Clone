@@ -16,11 +16,11 @@ pub fn output_folder(folder_path: &str) {
   // If exists, update.
   //  x-clone.d
 
-  let given_path = r_patten_func::R_REMOVE_QOUTES
+  let given_path: String = r_patten_func::R_REMOVE_QOUTES
     .replace_all(&folder_path, "")
     .to_string();
   let pp: &Path = Path::new::<str>(&given_path);
-  let mut has_error = false;
+  let mut has_error: bool = false;
 
   println!(r#"  Path: '{}'"#, pp.display());
 
@@ -42,7 +42,7 @@ pub fn output_folder(folder_path: &str) {
     std::process::exit(1);
   }
 
-  let mut conf_r = conf_rw::read_json_file().unwrap();
+  let mut conf_r: conf_rw::JSONConfig = conf_rw::read_json_file().unwrap();
 
   conf_r.output_path = given_path;
 

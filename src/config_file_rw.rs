@@ -42,7 +42,7 @@ pub fn read_json_file() -> Result<JSONConfig> {
 }
 
 pub fn write_json_file(json_value: JSONConfig) -> Result<()> {
-  let new_conf = serde_json::to_string_pretty(&json_value).unwrap();
+  let new_conf: String = serde_json::to_string_pretty(&json_value).unwrap();
 
   util::write_file(&ABS_FILE_PATH, &new_conf);
   Ok(())
