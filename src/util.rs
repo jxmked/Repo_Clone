@@ -1,11 +1,15 @@
 use std::fs::File;
 use std::io::{Read, Write};
-use std::ops::Not;
+// use std::ops::Not;
 use std::path::Path;
 
 // https://play.rust-lang.org/?version=stable&mode=debug&edition=2015&gist=1434052276de34362138cba939f6967a
-pub fn not<T: Not>(x: T) -> <T as Not>::Output {
-  Not::not(x)
+// pub fn not<T: Not>(x: T) -> <T as Not>::Output {
+//   Not::not(x)
+// }
+
+pub fn exit(exit_code: i32) {
+  std::process::exit(exit_code);
 }
 
 pub fn read_file(file_path: &str) -> String {
