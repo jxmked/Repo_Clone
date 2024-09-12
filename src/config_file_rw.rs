@@ -47,3 +47,9 @@ pub fn write_json_file(json_value: JSONConfig) -> Result<()> {
   util::write_file(&ABS_FILE_PATH, &new_conf);
   Ok(())
 }
+
+pub fn is_output_dir_set() -> bool {
+  let rd: JSONConfig = read_json_file().unwrap();
+
+  !rd.output_path.is_empty()
+}

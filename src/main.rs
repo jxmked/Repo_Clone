@@ -8,7 +8,17 @@ mod constants;
 use crate::set_config as set_conf;
 
 use std::env;
+use std::future::IntoFuture;
 use util::exit;
+
+extern crate reqwest;
+
+use futures::executor::block_on;
+
+use reqwest::Client;
+use std::fs::{create_dir_all, File};
+use std::io::{Read, Write};
+use tar::{Archive, Builder};
 
 fn print_help() {
   println!("\nx-clone requires parameters");
@@ -27,7 +37,54 @@ fn print_help() {
   println!("                                        : clone your private respository.");
 }
 
-fn do_clone(url: &str, with_git: bool) {}
+pub async fn download_and_extract(url: &str, output_dir: &str) -> Result<(), reqwest::Error> {
+  // let client = Client::new();
+  // let response = client.get(url).send().await?;
+
+  // let filename = url.rsplit('/').next().unwrap();
+  // let output_path = output_dir.to_string() + "/" + filename;
+
+  // // Create the output directory if it doesn't exist
+  // create_dir_all(output_dir).unwrap();
+
+  // response.
+
+  // // Write the downloaded content to a temporary file
+  // let mut temp_file = File::create(output_path).unwrap();
+  // let mut content = Vec::new();
+  // response.read_to_end(&mut content).unwrap();
+  // temp_file.write_all(&content).unwrap();
+
+  // // Extract the archive
+  // let mut archive = Archive::new(File::open(output_path).unwrap());
+  // archive.unpack(output_dir).unwrap();
+
+  let resp = reqwest::get(url).await.unwrap();
+  let mut out = File::create(output_dir).expect("failed to create file");
+  let mut ep: &[u8] = &resp.bytes().await.unwrap();
+  std::io::copy(&mut ep, &mut out).expect("failed to copy content");
+
+  Ok(())
+}
+
+#[tokio::do_clone]
+async fn do_clone(url: &str, with_git: bool) {
+  if !config_file_rw::is_output_dir_set() {
+    println!("Unable to clone anything...");
+    println!("Output dir is not yet set.");
+    println!("Use 'x-clone set output_folder <absolute folder>' to set it.");
+    exit(1);
+  }
+
+  println!("Cloning...");
+
+  let opath = config_file_rw::read_json_file().unwrap().output_path;
+
+  let f_url = format!("{url}/tarball/master");
+  let f_out = format!("{opath}/asdasdasd");
+
+  download_and_extract(&f_url, &f_out).await.unwrap();
+}
 
 fn main() {
   let args: Vec<_> = env::args().collect();
@@ -81,9 +138,16 @@ fn main() {
           }
         }
       } else if r_patten_func::is_git_url(&argv) {
+        println!("ASsadasd");
+
         if !is_do_pull {
-          do_clone(&argv, is_with_git);
+          println!("Do cloning");
+
+          let ee = do_clone(&argv, is_with_git);
+
+          block_on(ee);
         } else {
+          println!("just d pull");
           exit(1);
         }
       }
