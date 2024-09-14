@@ -38,6 +38,8 @@ fn print_help() {
 }
 
 pub async fn download_and_extract(url: &str, output_dir: &str) -> Result<(), reqwest::Error> {
+  // let mut resp = reqwest::get("https://sh.rustup.rs").await.expect("request failed");
+ 
   // let client = Client::new();
   // let response = client.get(url).send().await?;
 
@@ -59,15 +61,25 @@ pub async fn download_and_extract(url: &str, output_dir: &str) -> Result<(), req
   // let mut archive = Archive::new(File::open(output_path).unwrap());
   // archive.unpack(output_dir).unwrap();
 
-  let resp = reqwest::get(url).await.unwrap();
+  let resp = reqwest::get(url);
+
+  let  ii = resp.into_future();
+
+  let ee = ii.await;
+
+  
   let mut out = File::create(output_dir).expect("failed to create file");
-  let mut ep: &[u8] = &resp.bytes().await.unwrap();
+
+  let  ss = ee.unwrap();
+
+  
+  let mut ep: &[u8] = &ss.bytes().await.unwrap();
   std::io::copy(&mut ep, &mut out).expect("failed to copy content");
 
   Ok(())
 }
 
-#[tokio::do_clone]
+#[tokio::main]
 async fn do_clone(url: &str, with_git: bool) {
   if !config_file_rw::is_output_dir_set() {
     println!("Unable to clone anything...");
@@ -97,7 +109,7 @@ fn main() {
   let mut is_with_git: bool = false;
   let mut is_do_pull: bool = false;
 
-  for i in 0..args.len() {
+  for i in 1..args.len() {
     let argv: String = args[i].to_string();
 
     if argv == "set" {
@@ -143,13 +155,17 @@ fn main() {
         if !is_do_pull {
           println!("Do cloning");
 
-          let ee = do_clone(&argv, is_with_git);
+           do_clone(&argv, is_with_git);
 
-          block_on(ee);
+          
         } else {
           println!("just d pull");
           exit(1);
         }
+      } else {
+        println!("Invalid argument: {}", argv);
+
+        exit(1);
       }
     }
   }
