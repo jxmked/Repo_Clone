@@ -3,15 +3,21 @@ mod r_patten_func;
 mod util;
 
 mod do_clone;
-mod set_config;
 
+
+mod set_config;
 mod constants;
 
-use crate::do_clone as clone_mod;
+mod git_url_destructor;
+use crate::git_url_destructor::GitUrlDestructor;
+
+// use crate::do_clone as clone_mod;
 use crate::set_config as set_conf;
 
 use std::env;
 use util::exit;
+
+
 
 fn print_help() {
   println!("\nx-clone requires parameters");
@@ -34,19 +40,29 @@ fn print_help() {
 async fn begin_clone(url: &str, with_git: bool) {
   if !config_file_rw::is_output_dir_set() {
     println!("Unable to clone anything...");
-    println!("Output dir is not yet set.");
+    println!("Output directory is not yet set.");
     println!("Use 'x-clone set output_folder <absolute folder>' to set it.");
     exit(1);
   }
 
-  println!("Cloning...");
 
-  let opath = config_file_rw::read_json_file().unwrap().output_path;
+  let gud = GitUrlDestructor::new(&url);
 
-  let f_url = format!("{url}/tarball/master");
-  let f_out = format!("{opath}/asdasdasd");
 
-  clone_mod::without_git::without_git(&f_url, &f_out).await.unwrap();
+  // if r_patten_func::is_sub_branch(url) {
+  //   println!("Sub branch");
+  // } else {
+  //   println!("Not sub branch");
+  // }
+
+
+
+  // let opath = config_file_rw::read_json_file().unwrap().output_path;
+
+  // let f_url = format!("{url}/tarball/master");
+  // let f_out = format!("{opath}/asdasdasd");
+
+  // clone_mod::without_git::without_git(&f_url, &f_out).await.unwrap();
 }
 
 fn main() {
@@ -80,6 +96,7 @@ fn main() {
         set_conf::output_folder::output_folder(&args[i + 2]);
       } else if args[i + 1] == "token" {
         set_conf::token::token(&args[i + 2]);
+
       } else {
         println!("\nNothing to recongif");
       }
