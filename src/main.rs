@@ -1,25 +1,17 @@
 mod config_file_rw;
 mod r_patten_func;
-mod set_config;
 mod util;
+
+mod do_clone;
+mod set_config;
 
 mod constants;
 
+use crate::do_clone as clone_mod;
 use crate::set_config as set_conf;
 
 use std::env;
 use util::exit;
-
-use std::future::IntoFuture;
-
-extern crate reqwest;
-
-use std::fs::File;
-use std::path::Path;
-use tar::Archive;
-
-use flate2::read::GzDecoder;
-// use std::os::unix::OpenOptionsExt;
 
 fn print_help() {
   println!("\nx-clone requires parameters");
@@ -39,7 +31,7 @@ fn print_help() {
 }
 
 #[tokio::main]
-async fn do_clone(url: &str, with_git: bool) {
+async fn begin_clone(url: &str, with_git: bool) {
   if !config_file_rw::is_output_dir_set() {
     println!("Unable to clone anything...");
     println!("Output dir is not yet set.");
@@ -54,7 +46,7 @@ async fn do_clone(url: &str, with_git: bool) {
   let f_url = format!("{url}/tarball/master");
   let f_out = format!("{opath}/asdasdasd");
 
-  download_and_extract(&f_url, &f_out).await.unwrap();
+  clone_mod::without_git::without_git(&f_url, &f_out).await.unwrap();
 }
 
 fn main() {
@@ -109,12 +101,8 @@ fn main() {
           }
         }
       } else if r_patten_func::is_git_url(&argv) {
-        println!("ASsadasd");
-
         if !is_do_pull {
-          println!("Do cloning");
-
-          do_clone(&argv, is_with_git);
+          begin_clone(&argv, is_with_git);
         } else {
           println!("just d pull");
           exit(1);
