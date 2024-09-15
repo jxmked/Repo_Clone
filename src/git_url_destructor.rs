@@ -1,16 +1,15 @@
 use lazy_static::lazy_static;
 use regex::Regex;
 
-lazy_static!{
+lazy_static! {
   static ref git_host: Regex = Regex::new(r"(http(s)\:\/\/)?(www\.)?github\.com\/").unwrap();
-
 }
 
 pub struct GitUrlDestructor {
   url: String,
   username: String,
   repository: String,
-  branch: String
+  branch: String,
 }
 
 impl GitUrlDestructor {
@@ -24,8 +23,8 @@ impl GitUrlDestructor {
   }
 
   pub fn exec_split(&self) {
-    let n_prot = git_host.replace(&self.url, "");
+    let n_prot = git_host.replace(&self.url, "").to_string();
 
-
+    print!("{}", n_prot);
   }
 }

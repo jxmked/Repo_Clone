@@ -8,8 +8,8 @@ mod do_clone;
 mod set_config;
 mod constants;
 
-mod GitUrlDestructor;
-use crate::GitUrlDestructor::GitUrlDestructor as UrlDestruct;
+mod git_url_destructor;
+use crate::git_url_destructor::GitUrlDestructor as UrlDestruct;
 
 // use crate::do_clone as clone_mod;
 use crate::set_config as set_conf;
@@ -46,7 +46,7 @@ async fn begin_clone(url: &str, with_git: bool) {
   }
 
 
-  let gud = UrlDestruct::new("sadasda");
+  let gud = UrlDestruct::new(url);
   gud.exec_split();
   
 
