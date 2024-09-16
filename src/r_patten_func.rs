@@ -21,17 +21,17 @@ lazy_static! {
   pub static ref R_GIT_PAT: Regex = Regex::new(r"^(ghp_)[a-zA-Z0-9]{36}$").unwrap();
 
   // Check if /tree/ exists in url
-  pub static ref R_GIT_SUB_BRANCH: Regex = Regex::new(r"\.com\/([a-zA-Z\-\_0-9]+\/){2}tree\/").unwrap();
+  // pub static ref R_GIT_SUB_BRANCH: Regex = Regex::new(r"\.com\/([a-zA-Z\-\_0-9]+\/){2}tree\/").unwrap();
 }
 
-pub fn is_sub_branch(v: &str) -> bool {
-  let a = R_GITHUB_REPO_A.replace(v, "");
-  let b = R_GITHUB_REPO_B.replace(&a, "");
+// pub fn is_sub_branch(v: &str) -> bool {
+//   let a = R_GITHUB_REPO_A.replace(v, "");
+//   let b = R_GITHUB_REPO_B.replace(&a, "");
 
-  println!("{}", b);
+//   println!("{}", b);
   
-  R_GIT_SUB_BRANCH.is_match(v)
-}
+//   R_GIT_SUB_BRANCH.is_match(v)
+// }
 
 pub fn is_flag(v: &str) -> bool {
   R_IS_FLAG.is_match(v)

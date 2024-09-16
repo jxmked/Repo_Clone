@@ -4,9 +4,8 @@ mod util;
 
 mod do_clone;
 
-
-mod set_config;
 mod constants;
+mod set_config;
 
 mod git_url_destructor;
 use crate::git_url_destructor::GitUrlDestructor as UrlDestruct;
@@ -16,8 +15,6 @@ use crate::set_config as set_conf;
 
 use std::env;
 use util::exit;
-
-
 
 fn print_help() {
   println!("\nx-clone requires parameters");
@@ -45,19 +42,18 @@ async fn begin_clone(url: &str, with_git: bool) {
     exit(1);
   }
 
+  println!("{}", url);
 
-  let gud = UrlDestruct::new(url);
-  gud.exec_split();
-  
+  let mut gud = UrlDestruct::new(url);
+ gud.exec_split();
 
+ println!("{}-{}-{}", gud.username, gud.repository, gud.branch);
 
   // if r_patten_func::is_sub_branch(url) {
   //   println!("Sub branch");
   // } else {
   //   println!("Not sub branch");
   // }
-
-
 
   // let opath = config_file_rw::read_json_file().unwrap().output_path;
 
@@ -98,7 +94,6 @@ fn main() {
         set_conf::output_folder::output_folder(&args[i + 2]);
       } else if args[i + 1] == "token" {
         set_conf::token::token(&args[i + 2]);
-
       } else {
         println!("\nNothing to recongif");
       }
