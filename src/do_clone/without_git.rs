@@ -8,12 +8,26 @@ use tar::Archive;
 
 use flate2::read::GzDecoder;
 
-pub async fn without_git(url: &str, output_dir: &str) -> Result<(), reqwest::Error> {
-  let resp = reqwest::get(url);
+use crate::constants;
+use crate::git_url_destructor::GitUrlDestructor;
 
-  let ii = resp.into_future();
+pub async fn without_git(data: GitUrlDestructor, output_dir: &str) -> Result<(), reqwest::Error> {
 
-  let ee = ii.await;
+  // We have a problem...
+  // If the main branch has different names and the master/main
+  // branch remains as sub branch...
+  let branch: String = if data.branch_defined() {
+    data.branch
+  } else {
+    constants::MASTER_BRANCH.to_string()
+  };
+
+  let url = format!(
+    "https://github.com/{}/{}/tarball/{}",
+    data.username, data.repository, branch
+  );
+
+  let resp = reqwest::get(url).into_future().await.unwrap();
 
   let x_path = Path::new(&output_dir);
 
@@ -21,9 +35,7 @@ pub async fn without_git(url: &str, output_dir: &str) -> Result<(), reqwest::Err
 
   let mut out = File::create(efile).expect("failed to create file");
 
-  let ss = ee.unwrap();
-
-  let mut ep: &[u8] = &ss.bytes().await.unwrap();
+  let mut ep: &[u8] = &resp.bytes().await.unwrap();
   std::io::copy(&mut ep, &mut out).expect("failed to copy content");
 
   let gg = File::open(efile).unwrap();

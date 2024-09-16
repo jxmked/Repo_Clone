@@ -41,4 +41,8 @@ impl GitUrlDestructor {
       self.branch = res[3].to_string();
     }
   }
+
+  pub fn branch_defined(&self) -> bool {
+    !self.branch.is_empty()
+  }
 }

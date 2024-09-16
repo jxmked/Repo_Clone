@@ -47,7 +47,7 @@ async fn begin_clone(url: &str, with_git: bool) {
   let mut gud = UrlDestruct::new(url);
  gud.exec_split();
 
- println!("{}-{}-{}", gud.username, gud.repository, gud.branch);
+ println!("{}-{}-{}", gud.username, gud.repository, gud.branch_defined());
 
   // if r_patten_func::is_sub_branch(url) {
   //   println!("Sub branch");
