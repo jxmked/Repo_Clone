@@ -13,7 +13,9 @@ use crate::git_url_destructor::GitUrlDestructor as UrlDestruct;
 // use crate::do_clone as clone_mod;
 use crate::set_config as set_conf;
 
-use std::env;
+use std::{env, fs};
+use std::path::Path;
+use do_clone::without_git::without_git;
 use util::exit;
 
 fn print_help() {
@@ -42,12 +44,36 @@ async fn begin_clone(url: &str, with_git: bool) {
     exit(1);
   }
 
-  println!("{}", url);
-
   let mut gud = UrlDestruct::new(url);
- gud.exec_split();
+  gud.exec_split();
 
- println!("{}-{}-{}", gud.username, gud.repository, gud.branch_defined());
+  println!(
+    "{}-{}-{}",
+    gud.username,
+    gud.repository,
+    gud.branch_defined()
+  );
+
+  let branch = if gud.branch_defined() {
+    &gud.branch
+  } else {
+    &constants::MASTER_BRANCH.to_string()
+  };
+
+  let conf = config_file_rw::read_json_file().unwrap();
+
+
+  // Prefer output directory
+  let path = Path::new(&conf.output_path);
+  let path = path.join(&gud.username);
+  let path = path.join(format!("{} ({})", gud.repository, branch));
+  let out_final_path = path.to_str().as_slice()[..][0];
+
+  fs::create_dir_all(out_final_path).unwrap();
+
+  println!("To {}", &out_final_path);
+
+  without_git(gud, out_final_path, "asdjha").await.unwrap();
 
   // if r_patten_func::is_sub_branch(url) {
   //   println!("Sub branch");
@@ -64,6 +90,8 @@ async fn begin_clone(url: &str, with_git: bool) {
 }
 
 fn main() {
+  util::random(9);
+
   let args: Vec<_> = env::args().collect();
 
   if args.len() <= 1 {

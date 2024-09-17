@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::io::{Read, Write};
 // use std::ops::Not;
+use crate::constants;
 use std::path::Path;
 
 // https://play.rust-lang.org/?version=stable&mode=debug&edition=2015&gist=1434052276de34362138cba939f6967a
@@ -41,4 +42,7 @@ pub fn create_if_not_exists(file_path: &str) {
 
 pub fn file_exists(file_path: &str) -> bool {
   Path::new(file_path).is_file()
+}
+pub fn random(len: usize) -> String {
+  random_string::generate(len, constants::RANDOM_CHARSET)
 }

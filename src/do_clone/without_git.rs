@@ -1,17 +1,24 @@
+use std::fs;
 use std::future::IntoFuture;
 
 extern crate reqwest;
 
 use std::fs::File;
 use std::path::Path;
-use tar::Archive;
+use std::path::PathBuf;
 
 use flate2::read::GzDecoder;
+use reqwest::Response;
+use tar::Archive;
 
 use crate::constants;
 use crate::git_url_destructor::GitUrlDestructor;
 
-pub async fn without_git(data: GitUrlDestructor, output_dir: &str) -> Result<(), reqwest::Error> {
+pub async fn without_git(
+  data: GitUrlDestructor,
+  output_dir: &str,
+  random_str: &str,
+) -> Result<(), reqwest::Error> {
   // We have a problem...
   // If the main branch has different names and the master/main
   // branch remains as sub branch...
@@ -26,35 +33,43 @@ pub async fn without_git(data: GitUrlDestructor, output_dir: &str) -> Result<(),
     data.username, data.repository, branch
   );
 
+  println!("{}", url);
+
   // Setting up temp folder
-  let root_exe = std::env::current_exe().unwrap();
-  let root_exe_temp_folder = constants::GZIP_TEMP_FOLDER;
+  let mut exe_root: PathBuf = std::env::current_exe().unwrap();
+  exe_root.pop();
+  exe_root.push(&constants::GZIP_TEMP_FOLDER);
 
-  // hahahaha
-  let exe_root = Path::new(&root_exe);
-  let exe_root = &exe_root.join(&root_exe_temp_folder);
-  let exe_root = &exe_root.join("temp.tar.gz");
+  match fs::create_dir_all(&exe_root) {
+    Ok(_) => {}
+    Err(err) => {
+      println!(
+        "Folder already exists, {}",
+        &exe_root.to_str().as_slice()[..][0]
+      );
+    }
+  }
 
-  // Setting final output folder
-  
+  let exe_root: &PathBuf = &exe_root.join(&format!("{}.tar.gz", &random_str));
+
+  println!("File, {}", &exe_root.to_str().as_slice()[..][0]);
 
   // Creating connection and downloading repo
-  let resp: reqwest::Response = reqwest::get(url).into_future().await.unwrap();
+  let resp: Response = reqwest::get(url).into_future().await.unwrap();
   let mut u8_bytes: &[u8] = &resp.bytes().await.unwrap();
 
-  let x_path = Path::new(&output_dir);
+  let mut outfile_writer: File = File::create(&exe_root).expect("failed to create file");
 
-  let efile = &x_path.join("samp.tar.gz");
+  // Write file into temp folder
+  std::io::copy(&mut u8_bytes, &mut outfile_writer).expect("failed to copy content");
 
-  let mut out = File::create(exe_root).expect("failed to create file");
+  // Unpack file to final destination
 
-  std::io::copy(&mut u8_bytes, &mut out).expect("failed to copy content");
+  let open_zip_decom: File = File::open(&exe_root).unwrap();
 
-  let gg = File::open(exe_root).unwrap();
-
-  let tar = GzDecoder::new(gg);
-  let mut archive = Archive::new(tar);
-  let _ = archive.unpack(x_path.join("sett"));
+  let tar: GzDecoder<File> = GzDecoder::new(open_zip_decom);
+  let mut archive: Archive<GzDecoder<File>> = Archive::new(tar);
+  archive.unpack(output_dir).unwrap();
 
   Ok(())
 }
