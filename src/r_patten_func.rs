@@ -22,6 +22,9 @@ lazy_static! {
 
   // Check if /tree/ exists in url
   // pub static ref R_GIT_SUB_BRANCH: Regex = Regex::new(r"\.com\/([a-zA-Z\-\_0-9]+\/){2}tree\/").unwrap();
+
+  // Check if the string constains i dont know what to call
+  pub static ref A_GIT_TAR_CONT: Regex = Regex::new(r"([a-zA-Z0-9\-\_]+)\-([a-zA-Z0-9\-\_]+)-([a-fA-F0-9]{7})\/$").unwrap();
 }
 
 // pub fn is_sub_branch(v: &str) -> bool {

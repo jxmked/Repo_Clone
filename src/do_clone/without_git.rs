@@ -13,6 +13,7 @@ use tar::Archive;
 
 use crate::constants;
 use crate::git_url_destructor::GitUrlDestructor;
+use crate::r_patten_func;
 
 pub async fn without_git(
   data: GitUrlDestructor,
@@ -69,7 +70,39 @@ pub async fn without_git(
 
   let tar: GzDecoder<File> = GzDecoder::new(open_zip_decom);
   let mut archive: Archive<GzDecoder<File>> = Archive::new(tar);
-  archive.unpack(output_dir).unwrap();
+
+  // let mut first_dir_entry = None;
+
+  archive.set_mask(1);
+
+  for entry in archive.entries().unwrap() {
+    
+    let mut entry = entry.unwrap();
+    let ee = entry.header().path().unwrap();
+    let mm = r_patten_func::A_GIT_TAR_CONT.is_match(&ee.to_str().as_slice()[..][0]);
+    // // println!("{} - {}",ee.display(), mm);
+
+    // if mm {
+    //   continue;
+    //   // first_dir_entry = Some(entry);
+    // }
+    entry.unpack_in(output_dir).unwrap();
+  }
+
+  // println!("{}", first_dir_entry.unwrap().path().unwrap().display());
+
+  // if Some(first_dir_entry) {
+  //   first_dir_en
+  // }
+  // if let Some(entry) = first_dir_entry {
+  //     let dir_path = entry.path().unwrap();
+
+  //     // entry.unpack_in(output_dir).unwrap();
+  //     println!("Extracted contents of {} to {}", dir_path.display(), output_dir);
+  // } else {
+  //     println!("No directories found in the archive.");
+  // }
+  // // archive.unpack(output_dir).unwrap();
 
   Ok(())
 }
