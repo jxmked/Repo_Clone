@@ -4,7 +4,7 @@ use std::future::IntoFuture;
 extern crate reqwest;
 
 use std::fs::File;
-use std::path::Path;
+// use std::path::Path;
 use std::path::PathBuf;
 
 use flate2::read::GzDecoder;
@@ -13,11 +13,12 @@ use tar::Archive;
 
 use crate::constants;
 use crate::git_url_destructor::GitUrlDestructor;
-use crate::r_patten_func;
+// use crate::r_patten_func;
 
 pub async fn without_git(
   data: GitUrlDestructor,
   output_dir: &str,
+  tmp_dir: &str,
   random_str: &str,
 ) -> Result<(), reqwest::Error> {
   // We have a problem...
@@ -43,7 +44,7 @@ pub async fn without_git(
 
   match fs::create_dir_all(&exe_root) {
     Ok(_) => {}
-    Err(err) => {
+    Err(_err) => {
       println!(
         "Folder already exists, {}",
         &exe_root.to_str().as_slice()[..][0]
@@ -71,22 +72,13 @@ pub async fn without_git(
   let tar: GzDecoder<File> = GzDecoder::new(open_zip_decom);
   let mut archive: Archive<GzDecoder<File>> = Archive::new(tar);
 
-  // let mut first_dir_entry = None;
-
-  archive.set_mask(1);
-
-  for entry in archive.entries().unwrap() {
-    
-    let mut entry = entry.unwrap();
-    let ee = entry.header().path().unwrap();
-    let mm = r_patten_func::A_GIT_TAR_CONT.is_match(&ee.to_str().as_slice()[..][0]);
-    // // println!("{} - {}",ee.display(), mm);
-
-    // if mm {
-    //   continue;
-    //   // first_dir_entry = Some(entry);
-    // }
-    entry.unpack_in(output_dir).unwrap();
+  match archive.unpack(output_dir) {
+    Ok(_) => {
+      println!("Okay")
+    }
+    Err(_err) => {
+      println!("Something went wrong");
+    }
   }
 
   // println!("{}", first_dir_entry.unwrap().path().unwrap().display());

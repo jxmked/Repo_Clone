@@ -6,3 +6,7 @@ pub const GZIP_TEMP_FOLDER: &str = "clearable";
 pub const MASTER_BRANCH: &str = "master";
 
 pub const RANDOM_CHARSET: &str = "abcdef1234567890";
+
+// Since, I couldn't find better solution to extract the files
+// as I wanted to... I should go with the old style...
+pub const TEMP_GZIP_FOLDER: &str = ".xio";
