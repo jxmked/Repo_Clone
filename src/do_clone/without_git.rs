@@ -1,3 +1,11 @@
+/**
+ * What to do?
+ * Extract the contents of the archive to git clone folder then.
+ * Since the foldername of the output was shitty thing,
+ * we just read the Archive root folder (the very first folder)
+ * then match it from extracted folder into git clone folder.
+ * Match it the rename it. That is so sleek!!
+ */
 use std::fs;
 use std::future::IntoFuture;
 
@@ -5,7 +13,7 @@ extern crate reqwest;
 
 use std::fs::File;
 // use std::path::Path;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use flate2::read::GzDecoder;
 use reqwest::Response;
@@ -15,10 +23,36 @@ use crate::constants;
 use crate::git_url_destructor::GitUrlDestructor;
 // use crate::r_patten_func;
 
+// Get first folder name
+fn get_first_folder_name(mut ar: Archive<GzDecoder<File>>) -> Result<String, &'static str> {
+  while let Ok(entry) = ar.entries() {
+    for ex in entry {
+      match ex {
+        Ok(ez) => {
+          if ez.header().entry_type() == tar::EntryType::Directory {
+            return Ok(ez.path().unwrap().to_string_lossy().to_string());
+          }
+        }
+        Err(_) => (),
+      }
+    }
+  }
+
+  Ok(String::new()) // Return an empty String if no folders found
+}
+
+fn remove_last_char(s: &str) -> String {
+  if s.is_empty() {
+      return String::new(); // Return empty string if input is empty
+  }
+
+  s[..s.len() - 1].to_string()
+}
+
 pub async fn without_git(
   data: GitUrlDestructor,
   output_dir: &str,
-  tmp_dir: &str,
+  final_output_dir: &str,
   random_str: &str,
 ) -> Result<(), reqwest::Error> {
   // We have a problem...
@@ -35,9 +69,7 @@ pub async fn without_git(
     data.username, data.repository, branch
   );
 
-  println!("{}", url);
-
-  // Setting up temp folder
+  // Setting up temp folder to store archive file
   let mut exe_root: PathBuf = std::env::current_exe().unwrap();
   exe_root.pop();
   exe_root.push(&constants::GZIP_TEMP_FOLDER);
@@ -52,6 +84,7 @@ pub async fn without_git(
     }
   }
 
+  // Path and name of Archive
   let exe_root: &PathBuf = &exe_root.join(&format!("{}.tar.gz", &random_str));
 
   println!("File, {}", &exe_root.to_str().as_slice()[..][0]);
@@ -79,6 +112,29 @@ pub async fn without_git(
     Err(_err) => {
       println!("Something went wrong");
     }
+  }
+
+  let fes = get_first_folder_name(archive);
+
+  // Rename shitty foldername into our desired name
+  match fes {
+    Ok(result) => {
+
+      let mut old_name = Path::new(output_dir).to_path_buf();
+      old_name.push(remove_last_char(&result));
+
+      let new_name = Path::new(final_output_dir).to_path_buf();
+
+      println!(
+        "{} ----- {} ----- {}",
+        result.to_string(),
+        old_name.to_string_lossy().to_string(),
+        new_name.to_string_lossy().to_string()
+      );
+
+      // fs::rename(old_name, new_name)
+    }
+    Err(_) => println!("Error folder name"),
   }
 
   // println!("{}", first_dir_entry.unwrap().path().unwrap().display());

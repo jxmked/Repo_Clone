@@ -48,10 +48,11 @@ async fn begin_clone(url: &str, with_git: bool) {
   gud.exec_split();
 
   println!(
-    "{}-{}-{}",
+    "{}-{}-{}-{}",
     gud.username,
     gud.repository,
-    gud.branch_defined()
+    gud.branch_defined(),
+    with_git
   );
 
   let branch = if gud.branch_defined() {
@@ -65,14 +66,22 @@ async fn begin_clone(url: &str, with_git: bool) {
   // Prefer output directory
   let mut path: std::path::PathBuf = Path::new(&conf.output_path).to_path_buf();
   path.push(&gud.username);
-  path.push(format!("{} ({})", gud.repository, branch));
+
+  let mut f_path: std::path::PathBuf = path.clone();
+  f_path.push(format!("{} ({})", gud.repository, branch));
 
   let out_final_path = path.to_str().as_slice()[..][0];
 
   fs::create_dir_all(out_final_path).unwrap();
 
-
-  without_git(gud, out_final_path, "dasd", "asdjha").await.unwrap();
+  without_git(
+    gud,
+    out_final_path,
+    f_path.to_str().as_slice()[..][0],
+    "asdjha",
+  )
+  .await
+  .unwrap();
 
   // if r_patten_func::is_sub_branch(url) {
   //   println!("Sub branch");
