@@ -11,8 +11,9 @@ use std::future::IntoFuture;
 
 extern crate reqwest;
 
+use std::error;
 use std::fs::File;
-use std::path::PathBuf;
+use std::path::{PathBuf, Path};
 
 use flate2::read::GzDecoder;
 use reqwest::Response;
@@ -20,13 +21,14 @@ use tar::Archive;
 
 use crate::constants;
 use crate::git_url_destructor::GitUrlDestructor;
+use crate::util;
 // use crate::r_patten_func;
 
 // Get first folder name
 fn get_first_folder_name(
   mut archive: Archive<GzDecoder<File>>,
-) -> Result<String, Box<dyn std::error::Error>> {
-  for first_entry in archive.entries() {
+) -> Result<String, Box<dyn error::Error>> {
+  while let Ok(first_entry) = archive.entries() {
     for entry in first_entry {
       if entry.as_ref().unwrap().header().entry_type() == tar::EntryType::Directory {
         return Ok(entry.unwrap().path().unwrap().to_string_lossy().to_string());
@@ -36,12 +38,35 @@ fn get_first_folder_name(
   Err("No root folder found in archive.".into())
 }
 
-fn remove_last_char(s: &str) -> String {
-  if s.is_empty() {
-    return String::new(); // Return empty string if input is empty
-  }
+fn open_archive_for_read(path: PathBuf) -> Result<Archive<GzDecoder<File>>, &'static str> {
+  match File::open(path) {
+    Ok(file) => {
+      let tar: GzDecoder<File> = GzDecoder::new(file);
+      return Ok(Archive::new(tar));
+    }
 
-  s[..s.len() - 1].to_string()
+    Err(_) => {}
+  }
+  Err("Unable to open file as Archive")
+}
+
+// Decom archive file
+fn extract_archive_to_folder(file_to_decomp: PathBuf, output_dir: &str) {
+  // File to decompress
+  let opened_archive = open_archive_for_read(file_to_decomp);
+
+  match opened_archive {
+    Ok(mut archive) => match archive.unpack(output_dir) {
+      Ok(_) => {
+        println!("Unpacked")
+      }
+      Err(_err) => {
+        println!("Something went wrong while unpacking...");
+      }
+    },
+
+    Err(_) => {}
+  }
 }
 
 pub async fn without_git(
@@ -94,67 +119,37 @@ pub async fn without_git(
   std::io::copy(&mut u8_bytes, &mut outfile_writer).expect("failed to copy content");
 
   // Unpack file to final destination
-
-  // File to decompress
-  let open_zip_decom = File::open(&exe_root);
-
-  match open_zip_decom {
-    Ok(file) => {
-      let tar: GzDecoder<File> = GzDecoder::new(file);
-      let mut archive: Archive<GzDecoder<File>> = Archive::new(tar);
-
-      match archive.unpack(output_dir) {
-        Ok(_) => {
-          println!("Unpacked");
-        }
-        Err(_err) => {
-          println!("Something went wrong while unpacking...");
-        }
-      }
-    }
-    Err(_) => {
-      println!("File could not be read.");
-    }
-  }
+  extract_archive_to_folder(exe_root.to_path_buf(), output_dir);
 
   // Rename shitty output folder into desired one
-  let open_zip_decom = File::open(&exe_root);
+  match open_archive_for_read(exe_root.to_path_buf()) {
+    Ok(archive) => match get_first_folder_name(archive) {
+      Ok(filename) => {
+        let mut relative_path = Path::new(&output_dir.to_string()).to_path_buf();
 
-  match open_zip_decom {
-    Ok(file) => {
-      let tar: GzDecoder<File> = GzDecoder::new(file);
-      let archive: Archive<GzDecoder<File>> = Archive::new(tar);
+        relative_path.push(util::remove_last_char(&filename));
 
-      let res = get_first_folder_name(archive);
-      match res {
-        Ok(filename) => {
-          let mut old_dir = PathBuf::new();
+        let old_dir = relative_path.to_string_lossy().to_string();
 
-          let target_folder_name = remove_last_char(&filename);
+        relative_path.pop();
+        relative_path.push(final_output_dir);
 
-          old_dir.push(output_dir);
-          old_dir.push(target_folder_name);
+        let new_dir = relative_path.to_string_lossy().to_string();
 
-          println!("Out {}", old_dir.display());
-          println!("new dir {}", final_output_dir);
-
-          match fs::rename(old_dir, final_output_dir) {
-            Ok(_) => {
-              println!("Ok")
-            }
-            Err(_) => {
-              println!("Fucked")
-            }
+        match fs::rename(old_dir, new_dir) {
+          Ok(_) => {
+            println!("Ok")
+          }
+          Err(_) => {
+            println!("Fucked")
           }
         }
-        Err(_) => {
-          println!("Fail to fetch foldername");
-        }
       }
-    }
-    Err(_) => {
-      println!("File could not be read.");
-    }
+      Err(_) => {
+        println!("Fail to fetch foldername");
+      }
+    },
+    Err(_) => todo!(),
   }
 
   Ok(())

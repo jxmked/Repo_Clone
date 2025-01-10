@@ -46,3 +46,11 @@ pub fn file_exists(file_path: &str) -> bool {
 pub fn random(len: usize) -> String {
   random_string::generate(len, constants::RANDOM_CHARSET)
 }
+
+pub fn remove_last_char(s: &str) -> String {
+  if s.is_empty() {
+    return String::new(); // Return empty string if input is empty
+  }
+
+  s[..s.len() - 1].to_string()
+}
