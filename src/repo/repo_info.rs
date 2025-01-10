@@ -10,7 +10,15 @@ fn fetch_repo_info(url: &str) -> String {
     "Mozilla/5.0 (platform; rv:gecko-version) Gecko/gecko-trail Firefox/firefox-version",
   ).send();
 
+  
   let result = block_on(response);
+  let head = result.as_ref();
+  let refff = head.clone().unwrap();
+  let head2 = refff.headers();
+
+  let yy = head2.get("X-ratelimit-remaining");
+  let yt = yy.unwrap().to_str().unwrap().to_string();
+  println!("Rate remaining - {}", yt);
 
   match result {
     Ok(res) => {
