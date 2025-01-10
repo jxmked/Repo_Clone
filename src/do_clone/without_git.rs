@@ -12,8 +12,7 @@ use std::future::IntoFuture;
 extern crate reqwest;
 
 use std::fs::File;
-// use std::path::Path;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use flate2::read::GzDecoder;
 use reqwest::Response;
@@ -24,26 +23,22 @@ use crate::git_url_destructor::GitUrlDestructor;
 // use crate::r_patten_func;
 
 // Get first folder name
-fn get_first_folder_name(mut ar: Archive<GzDecoder<File>>) -> Result<String, &'static str> {
-  while let Ok(entry) = ar.entries() {
-    for ex in entry {
-      match ex {
-        Ok(ez) => {
-          if ez.header().entry_type() == tar::EntryType::Directory {
-            return Ok(ez.path().unwrap().to_string_lossy().to_string());
-          }
-        }
-        Err(_) => (),
+fn get_first_folder_name(
+  mut archive: Archive<GzDecoder<File>>,
+) -> Result<String, Box<dyn std::error::Error>> {
+  for first_entry in archive.entries() {
+    for entry in first_entry {
+      if entry.as_ref().unwrap().header().entry_type() == tar::EntryType::Directory {
+        return Ok(entry.unwrap().path().unwrap().to_string_lossy().to_string());
       }
     }
   }
-
-  Ok(String::new()) // Return an empty String if no folders found
+  Err("No root folder found in archive.".into())
 }
 
 fn remove_last_char(s: &str) -> String {
   if s.is_empty() {
-      return String::new(); // Return empty string if input is empty
+    return String::new(); // Return empty string if input is empty
   }
 
   s[..s.len() - 1].to_string()
@@ -100,57 +95,67 @@ pub async fn without_git(
 
   // Unpack file to final destination
 
-  let open_zip_decom: File = File::open(&exe_root).unwrap();
+  // File to decompress
+  let open_zip_decom = File::open(&exe_root);
 
-  let tar: GzDecoder<File> = GzDecoder::new(open_zip_decom);
-  let mut archive: Archive<GzDecoder<File>> = Archive::new(tar);
+  match open_zip_decom {
+    Ok(file) => {
+      let tar: GzDecoder<File> = GzDecoder::new(file);
+      let mut archive: Archive<GzDecoder<File>> = Archive::new(tar);
 
-  match archive.unpack(output_dir) {
-    Ok(_) => {
-      println!("Okay")
+      match archive.unpack(output_dir) {
+        Ok(_) => {
+          println!("Unpacked");
+        }
+        Err(_err) => {
+          println!("Something went wrong while unpacking...");
+        }
+      }
     }
-    Err(_err) => {
-      println!("Something went wrong");
+    Err(_) => {
+      println!("File could not be read.");
     }
   }
 
-  let fes = get_first_folder_name(archive);
+  // Rename shitty output folder into desired one
+  let open_zip_decom = File::open(&exe_root);
 
-  // Rename shitty foldername into our desired name
-  match fes {
-    Ok(result) => {
+  match open_zip_decom {
+    Ok(file) => {
+      let tar: GzDecoder<File> = GzDecoder::new(file);
+      let archive: Archive<GzDecoder<File>> = Archive::new(tar);
 
-      let mut old_name = Path::new(output_dir).to_path_buf();
-      old_name.push(remove_last_char(&result));
+      let res = get_first_folder_name(archive);
+      match res {
+        Ok(filename) => {
+          let mut old_dir = PathBuf::new();
 
-      let new_name = Path::new(final_output_dir).to_path_buf();
+          let target_folder_name = remove_last_char(&filename);
 
-      println!(
-        "{} ----- {} ----- {}",
-        result.to_string(),
-        old_name.to_string_lossy().to_string(),
-        new_name.to_string_lossy().to_string()
-      );
+          old_dir.push(output_dir);
+          old_dir.push(target_folder_name);
 
-      // fs::rename(old_name, new_name)
+          println!("Out {}", old_dir.display());
+          println!("new dir {}", final_output_dir);
+
+          match fs::rename(old_dir, final_output_dir) {
+            Ok(_) => {
+              println!("Ok")
+            }
+            Err(_) => {
+              println!("Fucked")
+            }
+          }
+        }
+        Err(_) => {
+          println!("Fail to fetch foldername");
+        }
+      }
     }
-    Err(_) => println!("Error folder name"),
+    Err(_) => {
+      println!("File could not be read.");
+    }
   }
-
-  // println!("{}", first_dir_entry.unwrap().path().unwrap().display());
-
-  // if Some(first_dir_entry) {
-  //   first_dir_en
-  // }
-  // if let Some(entry) = first_dir_entry {
-  //     let dir_path = entry.path().unwrap();
-
-  //     // entry.unpack_in(output_dir).unwrap();
-  //     println!("Extracted contents of {} to {}", dir_path.display(), output_dir);
-  // } else {
-  //     println!("No directories found in the archive.");
-  // }
-  // // archive.unpack(output_dir).unwrap();
 
   Ok(())
 }
