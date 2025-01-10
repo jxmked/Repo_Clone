@@ -21,6 +21,8 @@ use std::path::Path;
 use std::{env, fs};
 use util::exit;
 
+use repo::repo;
+
 fn print_help() {
   println!("\nx-clone requires parameters");
   println!("  $ x-clone <git repo url>\n");
@@ -63,6 +65,9 @@ async fn begin_clone(url: &str, with_git: bool) {
   } else {
     &constants::MASTER_BRANCH.to_string()
   };
+
+  repo(&gud.username, &gud.repository, &gud.branch);
+
 
   let conf: config_file_rw::JSONConfig = config_file_rw::read_json_file().unwrap();
 
