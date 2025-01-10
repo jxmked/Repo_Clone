@@ -2,6 +2,9 @@ mod config_file_rw;
 mod r_patten_func;
 mod util;
 
+mod repo;
+
+
 mod do_clone;
 
 mod constants;
