@@ -107,10 +107,9 @@ pub async fn without_git(
   // Path and name of Archive
   let exe_root: &PathBuf = &exe_root.join(&format!("{}.tar.gz", &random_str));
 
-  // println!("File, {}", &exe_root.to_str().as_slice()[..][0]);
 
   // Creating connection and downloading repo
-  let resp: Response = reqwest::get(url).into_future().await.unwrap();
+  let resp: Response = reqwest::get(url).into_future().await.unwrap();  // TODO: Handle any internet error
   let mut u8_bytes: &[u8] = &resp.bytes().await.unwrap();
 
   let mut outfile_writer: File = File::create(&exe_root).expect("failed to create file");

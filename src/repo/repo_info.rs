@@ -1,10 +1,9 @@
 use futures::executor::block_on;
 use reqwest::header::{HeaderMap, ACCEPT, AUTHORIZATION, USER_AGENT};
 use reqwest::Client;
-use serde_derive::{Deserialize, Serialize};
 
-use crate::config_file_rw;
 use crate::constants;
+use crate::{config_file_rw, r_patten_func};
 
 /**
  * These functions are esponsible for fetching the entire
@@ -14,12 +13,6 @@ use crate::constants;
  */
 
 // https://api.github.com/repos/{user}/{repo}
-
-#[derive(Serialize, Deserialize)]
-pub struct API_LIMIT_DATA {
-  pub remains: String,
-  pub max: String,
-}
 
 fn get_header_value(header_map: &HeaderMap, key: &str) -> String {
   let value = header_map.get(key);
@@ -47,13 +40,26 @@ fn fetch_repo_info(url: &str, jconfig: &config_file_rw::JSONConfig) -> Result<St
 
   let result = block_on(response);
 
+  if (result.is_err()) {
+    println!("errror at here");
+    return Err("".into());
+  }
+
   let header_map = result.as_ref().clone().unwrap().headers();
 
-  let response_status= result.as_ref().unwrap().status();
-  
+  let response_status = result.as_ref().unwrap().status();
 
   let limit_remains = get_header_value(header_map, "x-ratelimit-remaining");
   let limit_max = get_header_value(header_map, "x-ratelimit-limit");
+  let mut limit_diff: u16 = 0;
+
+  if r_patten_func::is_numeric_only(&limit_remains) && r_patten_func::is_numeric_only(&limit_max) {
+    let ml = limit_max.parse::<u16>().unwrap();
+    let mr = limit_remains.parse::<u16>().unwrap();
+
+    limit_diff = ml - mr;
+  }
+  if !response_status.is_success() {}
 
   println!("{} - {}  :  {}", limit_remains, limit_max, response_status);
 
