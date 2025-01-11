@@ -66,10 +66,12 @@ async fn begin_clone(url: &str, with_git: bool) {
     &constants::MASTER_BRANCH.to_string()
   };
 
-  repo(&gud.username, &gud.repository, &gud.branch);
 
 
   let conf: config_file_rw::JSONConfig = config_file_rw::read_json_file().unwrap();
+
+  repo(&gud.username, &gud.repository, &gud.branch, &conf);
+
 
   // Prefer output directory
   let mut path: std::path::PathBuf = Path::new(&conf.output_path).to_path_buf();

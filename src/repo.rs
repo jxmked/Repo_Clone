@@ -4,7 +4,9 @@ mod repo_info;
 
 use repo_info::repo_info;
 
-pub fn repo(username: &str, repo: &str, branch: &str) {
+use crate::config_file_rw::JSONConfig;
 
-  repo_info(username, repo);
+pub fn repo(username: &str, repo: &str, branch: &str, jconfig:&JSONConfig) {
+
+  repo_info(username, repo, jconfig);
 }
