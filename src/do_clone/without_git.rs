@@ -107,7 +107,7 @@ pub async fn without_git(
   // Path and name of Archive
   let exe_root: &PathBuf = &exe_root.join(&format!("{}.tar.gz", &random_str));
 
-  println!("File, {}", &exe_root.to_str().as_slice()[..][0]);
+  // println!("File, {}", &exe_root.to_str().as_slice()[..][0]);
 
   // Creating connection and downloading repo
   let resp: Response = reqwest::get(url).into_future().await.unwrap();

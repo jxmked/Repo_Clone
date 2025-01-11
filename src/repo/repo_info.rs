@@ -1,10 +1,10 @@
 use futures::executor::block_on;
-use reqwest::header::{ACCEPT, AUTHORIZATION, USER_AGENT};
+use reqwest::header::{HeaderMap, ACCEPT, AUTHORIZATION, USER_AGENT};
 use reqwest::Client;
+use serde_derive::{Deserialize, Serialize};
 
-use crate::config_file_rw::JSONConfig;
+use crate::config_file_rw;
 use crate::constants;
-
 
 /**
  * These functions are esponsible for fetching the entire
@@ -15,7 +15,19 @@ use crate::constants;
 
 // https://api.github.com/repos/{user}/{repo}
 
-fn fetch_repo_info(url: &str, jconfig: &JSONConfig) -> Result<String, String> {
+#[derive(Serialize, Deserialize)]
+pub struct API_LIMIT_DATA {
+  pub remains: String,
+  pub max: String,
+}
+
+fn get_header_value(header_map: &HeaderMap, key: &str) -> String {
+  let value = header_map.get(key);
+
+  value.unwrap().to_str().unwrap().to_string()
+}
+
+fn fetch_repo_info(url: &str, jconfig: &config_file_rw::JSONConfig) -> Result<String, String> {
   let initialized_client = Client::new();
 
   let mut req_builder = initialized_client
@@ -26,7 +38,7 @@ fn fetch_repo_info(url: &str, jconfig: &JSONConfig) -> Result<String, String> {
   // Insert token header if we have a token available.
   // The problem was we didnt know if the token was valid
   // so we just go ahead at this time.
-  if !jconfig.token.is_empty() {
+  if config_file_rw::is_token_set() {
     req_builder = req_builder.header(AUTHORIZATION, format!("Bearer {}", jconfig.token));
   }
 
@@ -35,34 +47,26 @@ fn fetch_repo_info(url: &str, jconfig: &JSONConfig) -> Result<String, String> {
 
   let result = block_on(response);
 
-  let head = result.as_ref();
-  let refff = head.clone().unwrap();
-  let head2 = refff.headers();
+  let header_map = result.as_ref().clone().unwrap().headers();
 
-  for hh in head2.values() {
-    println!("{}", hh.to_str().unwrap())
-  }
+  let response_status= result.as_ref().unwrap().status();
+  
 
-  let yy = head2.get("x-ratelimit-limit");
-  let yt = yy.unwrap().to_str().unwrap().to_string();
+  let limit_remains = get_header_value(header_map, "x-ratelimit-remaining");
+  let limit_max = get_header_value(header_map, "x-ratelimit-limit");
 
-  println!("Rate remaining - {}", yt);
+  println!("{} - {}  :  {}", limit_remains, limit_max, response_status);
 
   match result {
     Ok(res) => {
       return Ok(block_on(res.text()).unwrap());
-      // match block_on(res.text()) {
-      //   Ok(t) => return Ok(t),
-
-      //   Err(_) => return Err("Invalid response".into()),
-      // }
     }
 
     Err(_) => return Err("Invalid response".into()),
   }
 }
 
-pub fn repo_info(username: &str, repo_name: &str, jconfig: &JSONConfig) {
+pub fn repo_info(username: &str, repo_name: &str, jconfig: &config_file_rw::JSONConfig) {
   let url = format!("https://api.github.com/repos/{username}/{repo_name}");
 
   let res = fetch_repo_info(&url, &jconfig);

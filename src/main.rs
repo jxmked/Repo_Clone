@@ -4,7 +4,6 @@ mod util;
 
 mod repo;
 
-
 mod do_clone;
 
 mod constants;
@@ -49,16 +48,10 @@ async fn begin_clone(url: &str, with_git: bool) {
     exit(1);
   }
 
+  let conf: config_file_rw::JSONConfig = config_file_rw::read_json_file().unwrap();
+
   let mut gud = UrlDestruct::new(url);
   gud.exec_split();
-
-  println!(
-    "{}-{}-{}-{}",
-    gud.username,
-    gud.repository,
-    gud.branch_defined(),
-    with_git
-  );
 
   let branch = if gud.branch_defined() {
     &gud.branch
@@ -66,12 +59,16 @@ async fn begin_clone(url: &str, with_git: bool) {
     &constants::MASTER_BRANCH.to_string()
   };
 
-
-
-  let conf: config_file_rw::JSONConfig = config_file_rw::read_json_file().unwrap();
-
   repo(&gud.username, &gud.repository, &gud.branch, &conf);
 
+  let wggg = if with_git { "" } else { "out" };
+
+  println!("\nCloning...");
+  println!(
+    " * github.com/{}/{}/tree/{}",
+    gud.username, gud.repository, branch
+  );
+  println!(" - with{} data...", wggg);
 
   // Prefer output directory
   let mut path: std::path::PathBuf = Path::new(&conf.output_path).to_path_buf();
@@ -92,19 +89,6 @@ async fn begin_clone(url: &str, with_git: bool) {
   )
   .await
   .unwrap();
-
-  // if r_patten_func::is_sub_branch(url) {
-  //   println!("Sub branch");
-  // } else {
-  //   println!("Not sub branch");
-  // }
-
-  // let opath = config_file_rw::read_json_file().unwrap().output_path;
-
-  // let f_url = format!("{url}/tarball/master");
-  // let f_out = format!("{opath}/asdasdasd");
-
-  // clone_mod::without_git::without_git(&f_url, &f_out).await.unwrap();
 }
 
 fn main() {

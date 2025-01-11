@@ -53,3 +53,9 @@ pub fn is_output_dir_set() -> bool {
 
   !rd.output_path.is_empty()
 }
+
+pub fn is_token_set() -> bool {
+  let rd: JSONConfig = read_json_file().unwrap();
+
+  !rd.token.is_empty()
+}
