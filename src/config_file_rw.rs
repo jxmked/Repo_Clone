@@ -3,7 +3,6 @@ use crate::util;
 
 use lazy_static::lazy_static;
 use serde_derive::{Deserialize, Serialize};
-use serde_json::Result;
 use std::env;
 
 #[derive(Serialize, Deserialize)]
@@ -25,14 +24,14 @@ fn __get_file_path__(file_path: &str) -> String {
   return dir.to_str().unwrap().to_string();
 }
 
-pub fn read_json_file() -> Result<JSONConfig> {
+pub fn read_json_file() -> JSONConfig {
   if !util::file_exists(&ABS_FILE_PATH) {
     util::write_file(&ABS_FILE_PATH, __DEFAULT_CONFIG__);
   }
 
   let contents: String = util::read_file(&ABS_FILE_PATH);
 
-  return serde_json::from_str(&contents);
+  return serde_json::from_str(&contents).unwrap();
 
   // serde_json::from_str(&contents).map_err(|err| {
   //     println!("Error parsing config file.");
@@ -41,21 +40,20 @@ pub fn read_json_file() -> Result<JSONConfig> {
   // })
 }
 
-pub fn write_json_file(json_value: JSONConfig) -> Result<()> {
+pub fn write_json_file(json_value: JSONConfig) {
   let new_conf: String = serde_json::to_string_pretty(&json_value).unwrap();
 
   util::write_file(&ABS_FILE_PATH, &new_conf);
-  Ok(())
 }
 
 pub fn is_output_dir_set() -> bool {
-  let rd: JSONConfig = read_json_file().unwrap();
+  let rd: JSONConfig = read_json_file();
 
   !rd.output_path.is_empty()
 }
 
 pub fn is_token_set() -> bool {
-  let rd: JSONConfig = read_json_file().unwrap();
+  let rd: JSONConfig = read_json_file();
 
   !rd.token.is_empty()
 }

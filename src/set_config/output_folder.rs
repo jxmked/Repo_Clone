@@ -42,7 +42,7 @@ pub fn output_folder(folder_path: &str) {
     std::process::exit(1);
   }
 
-  let mut conf_r: conf_rw::JSONConfig = conf_rw::read_json_file().unwrap();
+  let mut conf_r: conf_rw::JSONConfig = conf_rw::read_json_file();
 
   conf_r.output_path = given_path;
 

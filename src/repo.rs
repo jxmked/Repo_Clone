@@ -15,8 +15,8 @@ pub struct RepoResult {
   pub branch: String,
 }
 
-pub fn repo(username: &str, repo: &str, branch: &str, jconfig: &JSONConfig) -> RepoResult {
-  let res = repo_info(username, repo, jconfig);
+pub fn repo(username: &str, repo: &str, branch: &str, conf: &JSONConfig) -> RepoResult {
+  let res = repo_info(username, repo, conf);
   let default_branch = res.default_branch.clone();
   let mut used_branch = res.default_branch;
 
@@ -26,10 +26,14 @@ pub fn repo(username: &str, repo: &str, branch: &str, jconfig: &JSONConfig) -> R
     }
   }
 
-  return RepoResult {
+  let ret =  RepoResult {
     output_folder: format!("{} ({})", res.name, used_branch),
     user: res.owner.login,
     repository: res.name,
     branch: default_branch,
   };
+
+  output_folder(ret, conf);
+
+  return ret;
 }

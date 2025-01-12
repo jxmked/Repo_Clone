@@ -21,7 +21,7 @@ pub fn token(gh_token: &str) {
     std::process::exit(1);
   }
 
-  let mut conf_r: conf_rw::JSONConfig = conf_rw::read_json_file().unwrap();
+  let mut conf_r: conf_rw::JSONConfig = conf_rw::read_json_file();
 
   conf_r.token = trimmed_token;
 

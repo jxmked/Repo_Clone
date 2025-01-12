@@ -48,21 +48,20 @@ async fn begin_clone(url: &str, with_git: bool) {
     exit(1);
   }
 
-  let conf: config_file_rw::JSONConfig = config_file_rw::read_json_file().unwrap();
+  let conf = config_file_rw::read_json_file();
 
   let mut gud = UrlDestruct::new(url);
   gud.exec_split();
 
 
-
-  repo(&gud.username, &gud.repository, &gud.branch, &conf);
+  let repo_ret = repo(&gud.username, &gud.repository, &gud.branch, &conf);
 
   let wggg = if with_git { "" } else { "out" };
 
   println!("\nCloning...");
   println!(
     " * https://github.com/{}/{}/tree/{}",
-    gud.username, gud.repository, branch
+    gud.username, gud.repository, repo_ret.branch
   );
   println!(" - with{} remote data...", wggg);
 
@@ -71,7 +70,7 @@ async fn begin_clone(url: &str, with_git: bool) {
   path.push(&gud.username);
 
   let mut f_path: std::path::PathBuf = path.clone();
-  f_path.push(format!("{} ({})", gud.repository, branch));
+  f_path.push(format!("{} ({})", gud.repository, repo_ret.branch));
 
   let out_final_path = path.to_str().as_slice()[..][0];
 
