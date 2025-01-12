@@ -3,8 +3,9 @@ use reqwest::header::{ACCEPT, AUTHORIZATION, USER_AGENT};
 use reqwest::Client;
 use serde_derive::{Deserialize, Serialize};
 
-use crate::constants;
 use crate::config_file_rw;
+use crate::constants;
+use crate::util::exit;
 
 #[derive(Serialize, Deserialize)]
 pub struct RepoUser {
@@ -18,7 +19,7 @@ pub struct RepoReturn {
 }
 
 /**
- * These functions are esponsible for fetching the entire
+ * These functions are responsible for fetching the entire
  * info about a defined repository on github.
  * Also, returns an invalid response for no network or a
  * repository does not exists...
@@ -32,7 +33,7 @@ pub struct RepoReturn {
 //   value.unwrap().to_str().unwrap().to_string()
 // }
 
-fn fetch_repo_info(url: &str, jconfig: &config_file_rw::JSONConfig) -> Result<String, String> {
+fn fetch_repo_info(url: &str, jconfig: &config_file_rw::JSONConfig) -> Result<String, ()> {
   let initialized_client = Client::new();
 
   let mut req_builder = initialized_client
@@ -53,12 +54,11 @@ fn fetch_repo_info(url: &str, jconfig: &config_file_rw::JSONConfig) -> Result<St
   let result = block_on(response);
 
   if result.is_err() {
-    return Err("".into());
+    return Err(());
   }
 
-  let response_status = result.as_ref().unwrap().status();
-  if !response_status.is_success() {
-    return Err("".into());
+  if !result.as_ref().unwrap().status().is_success() {
+    return Err(());
   }
 
   // What we gonna do with this???
@@ -77,13 +77,8 @@ fn fetch_repo_info(url: &str, jconfig: &config_file_rw::JSONConfig) -> Result<St
 
   // println!("{} - {}  :  {}", limit_remains, limit_max, response_status);
 
-  match result {
-    Ok(res) => {
-      return Ok(block_on(res.text()).unwrap());
-    }
-
-    Err(_) => return Err("Invalid response".into()),
-  }
+  let res = result.unwrap();
+  return Ok(block_on(res.text()).unwrap());
 }
 
 pub fn repo_info(
@@ -94,6 +89,16 @@ pub fn repo_info(
   let url = format!("https://api.github.com/repos/{username}/{repo_name}");
 
   let response = fetch_repo_info(&url, &jconfig);
+
+  if response.is_err() {
+    // Connection/Unstable/ etc... connection
+    // Terminate program
+
+    println!("\nUnable to connect or invalid response from Github Rest API Server...");
+    println!("    Exiting...");
+    exit(1);
+  }
+  
   let result = response.unwrap();
 
   return serde_json::from_str(&result).unwrap();
