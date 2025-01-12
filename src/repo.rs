@@ -5,11 +5,31 @@ use repo_info::repo_info;
 
 use crate::config_file_rw::JSONConfig;
 
-pub fn repo(username: &str, repo: &str, jconfig: &JSONConfig) {
-  let res = repo_info(username, repo, jconfig);
+use serde_derive::{Deserialize, Serialize};
 
-  println!(
-    "{} - {} - {}",
-    res.owner.login, res.name, res.default_branch
-  );
+#[derive(Serialize, Deserialize)]
+pub struct RepoResult {
+  pub output_folder: String,
+  pub user: String,
+  pub repository: String,
+  pub branch: String,
+}
+
+pub fn repo(username: &str, repo: &str, branch: &str, jconfig: &JSONConfig) -> RepoResult {
+  let res = repo_info(username, repo, jconfig);
+  let default_branch = res.default_branch.clone();
+  let mut used_branch = res.default_branch;
+
+  if !branch.is_empty() {
+    if !branch.eq_ignore_ascii_case(&default_branch) {
+      used_branch = branch.to_string();
+    }
+  }
+
+  return RepoResult {
+    output_folder: format!("{} ({})", res.name, used_branch),
+    user: res.owner.login,
+    repository: res.name,
+    branch: default_branch,
+  };
 }

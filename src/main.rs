@@ -53,22 +53,18 @@ async fn begin_clone(url: &str, with_git: bool) {
   let mut gud = UrlDestruct::new(url);
   gud.exec_split();
 
-  let branch = if gud.branch_defined() {
-    &gud.branch
-  } else {
-    &constants::MASTER_BRANCH.to_string()
-  };
 
-  repo(&gud.username, &gud.repository, &conf);
+
+  repo(&gud.username, &gud.repository, &gud.branch, &conf);
 
   let wggg = if with_git { "" } else { "out" };
 
   println!("\nCloning...");
   println!(
-    " * github.com/{}/{}/tree/{}",
+    " * https://github.com/{}/{}/tree/{}",
     gud.username, gud.repository, branch
   );
-  println!(" - with{} data...", wggg);
+  println!(" - with{} remote data...", wggg);
 
   // Prefer output directory
   let mut path: std::path::PathBuf = Path::new(&conf.output_path).to_path_buf();
