@@ -50,36 +50,31 @@ async fn begin_clone(url: &str, with_git: bool) {
 
   let conf = config_file_rw::read_json_file();
 
-  let mut gud = UrlDestruct::new(url);
-  gud.exec_split();
+  let mut url_destructor = UrlDestruct::new(url);
+  url_destructor.exec_split();
 
-
-  let repo_ret = repo(&gud.username, &gud.repository, &gud.branch, &conf);
+  let repo_ret = repo(
+    &url_destructor.username,
+    &url_destructor.repository,
+    &url_destructor.branch,
+    &conf,
+  )
+  .unwrap();
+  let output_folder = repo_ret.path;
+  let repository = repo_ret.result;
 
   let wggg = if with_git { "" } else { "out" };
 
   println!("\nCloning...");
   println!(
     " * https://github.com/{}/{}/tree/{}",
-    gud.username, gud.repository, repo_ret.branch
+    repository.user, repository.repository, repository.branch
   );
   println!(" - with{} remote data...", wggg);
 
-  // Prefer output directory
-  let mut path: std::path::PathBuf = Path::new(&conf.output_path).to_path_buf();
-  path.push(&gud.username);
-
-  let mut f_path: std::path::PathBuf = path.clone();
-  f_path.push(format!("{} ({})", gud.repository, repo_ret.branch));
-
-  let out_final_path = path.to_str().as_slice()[..][0];
-
-  fs::create_dir_all(out_final_path).unwrap();
-
   without_git(
-    gud,
-    out_final_path,
-    f_path.to_str().as_slice()[..][0],
+    repository,
+    output_folder,
     "asdjha",
   )
   .await

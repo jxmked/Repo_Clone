@@ -35,5 +35,14 @@ pub fn output_folder(ret: &RepoResult, conf: &JSONConfig) -> Result<PathBuf, Str
     }
   }
 
+  // We don't need to return the final output folder where the
+  // cloned files are about to place.
+  // We may need to make sure that the .../username/<repository>... are existing...
+  // outside of this function.
+
+  // Means, we need to push the final directory into path before someshit inside to use it.
+
+  abs_out_folder.pop();
+
   Ok(abs_out_folder)
 }

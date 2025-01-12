@@ -1,3 +1,7 @@
+/**
+ * These functions exit the program for any invalid or fail response
+ * or runtime error.
+ */
 mod output_folder;
 mod repo_info;
 
@@ -24,7 +28,12 @@ pub struct RepoReturnValue {
   pub path: PathBuf,
 }
 
-pub fn repo(username: &str, repo: &str, branch: &str, conf: &JSONConfig) -> RepoResult {
+pub fn repo(
+  username: &str,
+  repo: &str,
+  branch: &str,
+  conf: &JSONConfig,
+) -> Result<RepoReturnValue, ()> {
   // Fetch repository info
   let res = repo_info(username, repo, conf);
 
@@ -36,29 +45,34 @@ pub fn repo(username: &str, repo: &str, branch: &str, conf: &JSONConfig) -> Repo
 
   let info = res.ok().unwrap();
 
-  let default_branch = info.default_branch.clone();
-  let mut used_branch = info.default_branch;
+  let mut used_branch = info.default_branch.clone();
 
   if !branch.is_empty() {
-    if !branch.eq_ignore_ascii_case(&default_branch) {
+    if !branch.eq_ignore_ascii_case(info.default_branch.as_ref()) {
       used_branch = branch.to_string();
     }
+
+    // Either, we can delete the folder since it doesn't contain anything or
+    // move files from extracted to into that folder...?????
   }
 
   let ret = RepoResult {
     output_folder: format!("{} ({})", info.name, used_branch),
     user: info.owner.login,
     repository: info.name,
-    branch: default_branch,
+    branch: used_branch,
   };
 
   let abs_path = output_folder(&ret, conf);
 
   if abs_path.is_err() {
-    println!("{}", abs_path.unwrap_err());
+    println!("{}", abs_path.as_ref().unwrap_err());
     println!("  Exiting...");
     exit(1);
   }
 
-  return ret;
+  return Ok(RepoReturnValue {
+    path: abs_path.ok().unwrap(),
+    result: ret,
+  });
 }
