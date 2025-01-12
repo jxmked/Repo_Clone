@@ -3,15 +3,20 @@ use reqwest::header::{ACCEPT, AUTHORIZATION, USER_AGENT};
 use reqwest::Client;
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config_file_rw;
+use crate::config_file_rw::{is_token_set, JSONConfig};
 use crate::constants;
-use crate::util::exit;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
+
 pub struct RepoUser {
   pub login: String,
 }
-#[derive(Serialize, Deserialize)]
+
+// derive debug has been added having trouble for the repo function
+// to understand that this Object doesnt not going to handle
+// the error since error from serde_json has been filtered
+// before reaching the good parsed value.
+#[derive(Serialize, Deserialize, Debug)]
 pub struct RepoReturn {
   pub default_branch: String,
   pub name: String,
@@ -33,7 +38,7 @@ pub struct RepoReturn {
 //   value.unwrap().to_str().unwrap().to_string()
 // }
 
-fn fetch_repo_info(url: &str, jconfig: &config_file_rw::JSONConfig) -> Result<String, ()> {
+fn fetch_repo_info(url: &str, jconfig: &JSONConfig) -> Result<String, String> {
   let initialized_client = Client::new();
 
   let mut req_builder = initialized_client
@@ -44,7 +49,7 @@ fn fetch_repo_info(url: &str, jconfig: &config_file_rw::JSONConfig) -> Result<St
   // Insert token header if we have a token available.
   // The problem was we didnt know if the token was valid
   // so we just go ahead at this time.
-  if config_file_rw::is_token_set() {
+  if is_token_set() {
     req_builder = req_builder.header(AUTHORIZATION, format!("Bearer {}", jconfig.token));
   }
 
@@ -54,11 +59,14 @@ fn fetch_repo_info(url: &str, jconfig: &config_file_rw::JSONConfig) -> Result<St
   let result = block_on(response);
 
   if result.is_err() {
-    return Err(());
+    return Err("Invalid server response or connection error...".into());
   }
 
   if !result.as_ref().unwrap().status().is_success() {
-    return Err(());
+    return Err(format!(
+      "Response: Invalid status code {}...",
+      result.unwrap().status()
+    ));
   }
 
   // What we gonna do with this???
@@ -84,8 +92,8 @@ fn fetch_repo_info(url: &str, jconfig: &config_file_rw::JSONConfig) -> Result<St
 pub fn repo_info(
   username: &str,
   repo_name: &str,
-  jconfig: &config_file_rw::JSONConfig,
-) -> RepoReturn {
+  jconfig: &JSONConfig,
+) -> Result<RepoReturn, String> {
   let url = format!("https://api.github.com/repos/{username}/{repo_name}");
 
   let response = fetch_repo_info(&url, &jconfig);
@@ -93,13 +101,14 @@ pub fn repo_info(
   if response.is_err() {
     // Connection/Unstable/ etc... connection
     // Terminate program
-
-    println!("\nUnable to connect or invalid response from Github Rest API Server...");
-    println!("    Exiting...");
-    exit(1);
+    return Err(response.to_owned().unwrap_err().to_string());
   }
-  
-  let result = response.unwrap();
 
-  return serde_json::from_str(&result).unwrap();
+  let parsed_response = serde_json::from_str(response.as_ref().unwrap());
+
+  if parsed_response.is_err() {
+    return Err("Failed to parse server response...".into());
+  }
+
+  Ok(parsed_response.unwrap())
 }

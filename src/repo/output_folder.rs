@@ -1,28 +1,39 @@
 // These function will handle the output folder,
-// Verify if its already exists or has a valid folder name
+// Verify if its already exists or the folder is not empty
 
-use std::path::Path;
-
+use std::{
+  fs,
+  path::{Path, PathBuf},
+};
 
 use crate::config_file_rw::JSONConfig;
 
 use super::RepoResult;
 
-let mut is_exists = false;
-
-fn is_output_folder_exists(folder: &str, conf: JSONConfig) -> bool {
-
-
-  Path::new(folder).exists()
+fn is_directory_empty(path: &PathBuf) -> bool {
+  let entries = fs::read_dir(path);
+  let first_entry = entries.unwrap().next();
+  first_entry.is_none()
 }
 
-pub fn output_folder(ret: RepoResult, conf:JSONConfig) {
+fn is_directory_exists(path: &PathBuf) -> bool {
+  path.exists()
+}
 
-  let abs_out_folder = Path::new(&conf.output_path).to_path_buf();
-  abs_out_folder.push(ret.output_folder);
+pub fn output_folder(ret: &RepoResult, conf: &JSONConfig) -> Result<PathBuf, String> {
+  let mut abs_out_folder = Path::new(&conf.output_path).to_path_buf();
 
+  abs_out_folder.push(ret.user.clone());
+  abs_out_folder.push(ret.output_folder.clone());
 
-  if is_output_folder_exists(folder, conf) {
-
+  if is_directory_exists(&abs_out_folder) {
+    if !is_directory_empty(&abs_out_folder) {
+      return Err(format!(
+        "Directory '{}' is not empty.",
+        abs_out_folder.to_string_lossy().to_string()
+      ));
+    }
   }
+
+  Ok(abs_out_folder)
 }
