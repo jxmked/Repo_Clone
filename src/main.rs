@@ -59,7 +59,7 @@ async fn begin_clone(url: &str, with_git: bool) {
     &constants::MASTER_BRANCH.to_string()
   };
 
-  repo(&gud.username, &gud.repository, &gud.branch, &conf);
+  repo(&gud.username, &gud.repository, &conf);
 
   let wggg = if with_git { "" } else { "out" };
 

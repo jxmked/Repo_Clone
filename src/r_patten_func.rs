@@ -26,7 +26,7 @@ lazy_static! {
   // Check if the string constains i dont know what to call
   pub static ref A_GIT_TAR_CONT: Regex = Regex::new(r"([a-zA-Z0-9\-\_]+)\-([a-zA-Z0-9\-\_]+)-([a-fA-F0-9]{7})\/$").unwrap();
 
-  pub static ref NUMERIC_ONLY: Regex = Regex::new(r"^([0-9])$").unwrap();
+  // pub static ref NUMERIC_ONLY: Regex = Regex::new(r"^([0-9])$").unwrap();
 }
 
 // pub fn is_sub_branch(v: &str) -> bool {
@@ -60,6 +60,6 @@ pub fn is_git_pat(v: &str) -> bool {
   R_GIT_PAT.is_match(v)
 }
 
-pub fn is_numeric_only(v: &str) -> bool {
-  NUMERIC_ONLY.is_match(v)
-}
+// pub fn is_numeric_only(v: &str) -> bool {
+//   NUMERIC_ONLY.is_match(v)
+// }

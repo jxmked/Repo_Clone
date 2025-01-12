@@ -4,7 +4,7 @@ use reqwest::Client;
 use serde_derive::{Deserialize, Serialize};
 
 use crate::constants;
-use crate::{config_file_rw, util};
+use crate::config_file_rw;
 
 #[derive(Serialize, Deserialize)]
 pub struct RepoUser {
