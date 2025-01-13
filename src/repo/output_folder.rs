@@ -1,14 +1,39 @@
 // These function will handle the output folder,
 // Verify if its already exists or the folder is not empty
 
+mod directory_creator;
+
 use std::{
   fs,
   path::{Path, PathBuf},
 };
 
+use directory_creator::DirectoryCreator;
+
 use crate::config_file_rw::JSONConfig;
 
 use super::RepoResult;
+
+pub struct Output_Folder {
+  pub folder_path: PathBuf,
+  pub is_owner_exists: bool,
+  pub is_repository_exists: bool,
+
+  pub directory_creator: DirectoryCreator,
+}
+
+impl Output_Folder {
+  pub fn new() -> Self {
+    Self {
+      folder_path: PathBuf::new(),
+      is_owner_exists: false,
+      is_repository_exists: false,
+      directory_creator: DirectoryCreator::new()
+    }
+  }
+
+  pub fn create() {}
+}
 
 fn is_directory_empty(path: &PathBuf) -> bool {
   let entries = fs::read_dir(path);
