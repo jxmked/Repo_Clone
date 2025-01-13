@@ -26,15 +26,13 @@ impl DirectoryCreator {
     self.repository_path = path.clone();
   }
 
-  pub fn owner(&self) -> Result<(), ()> {
+  pub fn owner(&self) {
     let path = self.owner_path.clone();
     self.create_directory(path);
-    Ok(())
   }
 
-  pub fn repository(&self) -> Result<(), ()> {
+  pub fn repository(&self) {
     let path = self.repository_path.clone();
     self.create_directory(path);
-    Ok(())
   }
 }

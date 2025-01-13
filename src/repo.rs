@@ -7,7 +7,7 @@ mod repo_info;
 
 use std::path::PathBuf;
 
-use output_folder::output_folder;
+use output_folder::Output_Folder;
 use repo_info::repo_info;
 
 use crate::{config_file_rw::JSONConfig, util::exit};
