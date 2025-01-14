@@ -9,6 +9,7 @@ use std::env;
 pub struct JSONConfig {
   pub token: String,
   pub output_path: String,
+  pub exec_root: String,
 }
 
 lazy_static! {
@@ -30,14 +31,16 @@ pub fn read_json_file() -> JSONConfig {
   }
 
   let contents: String = util::read_file(&ABS_FILE_PATH);
+  let mut json_parsed: JSONConfig = serde_json::from_str(&contents).unwrap();
 
-  return serde_json::from_str(&contents).unwrap();
+  // Insert the path of executable into config
+  // It must be remain keep out of json config file
+  let mut exec_root = std::env::current_exe().unwrap();
+  exec_root.pop();
 
-  // serde_json::from_str(&contents).map_err(|err| {
-  //     println!("Error parsing config file.");
-  //     println!("Visit https://github.com/jxmked/Repo_Clone/issues");
-  //     err
-  // })
+  json_parsed.exec_root = exec_root.to_string_lossy().to_string();
+
+  return json_parsed;
 }
 
 pub fn write_json_file(json_value: JSONConfig) {

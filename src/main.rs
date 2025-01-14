@@ -54,7 +54,7 @@ async fn begin_clone(url: &str, mode: &CloneMode) {
   let wggg = match mode {
     CloneMode::With => "",
     CloneMode::Without => "out",
-    CloneMode::Pull => ""
+    CloneMode::Pull => "",
   };
 
   println!("\nCloning...");
@@ -64,7 +64,7 @@ async fn begin_clone(url: &str, mode: &CloneMode) {
   );
   println!(" - with{} remote data...", wggg);
 
-  clone(repository, output_folder, mode);
+  clone(repository, output_folder, conf, mode);
 
   // without_git(
   //   repository,
