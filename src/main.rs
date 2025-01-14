@@ -1,10 +1,10 @@
-mod config_file_rw;
-mod r_patten_func;
-mod util;
-mod repo;
 mod clone;
+mod config_file_rw;
 mod constants;
+mod r_patten_func;
+mod repo;
 mod set_config;
+mod util;
 
 mod git_url_destructor;
 use crate::git_url_destructor::GitUrlDestructor as UrlDestruct;
@@ -46,15 +46,11 @@ async fn begin_clone(url: &str, with_git: bool) {
   let mut url_destructor = UrlDestruct::new(url);
   url_destructor.exec_split();
 
-  let repo_ret = repo(
-    &url_destructor.username,
-    &url_destructor.repository,
-    &url_destructor.branch,
-    &conf,
-  )
-  .unwrap();
-  let output_folder = repo_ret.path;
+  let repo_ret = repo(&url_destructor, &conf).unwrap();
+  let output_folder = &repo_ret.path;
   let repository = repo_ret.result;
+
+  
 
   let wggg = if with_git { "" } else { "out" };
 

@@ -2,8 +2,8 @@ use std::fs;
 use std::path::PathBuf;
 
 pub struct DirectoryCreator {
-  owner_path: PathBuf,
-  repository_path: PathBuf,
+  pub owner_path: PathBuf,
+  pub repository_path: PathBuf,
 }
 
 impl DirectoryCreator {

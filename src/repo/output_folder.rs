@@ -6,13 +6,11 @@ mod directory_creator;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use crate::config_file_rw::JSONConfig;
 use directory_creator::DirectoryCreator;
-use tar::Entries;
 
 use super::RepoResult;
 
-pub struct Output_Folder {
+pub struct OutputFolder {
   pub is_owner_exists: bool,
   pub is_repository_exists: bool,
   pub create: DirectoryCreator,
@@ -20,14 +18,14 @@ pub struct Output_Folder {
   repo_result: RepoResult,
 }
 
-impl Output_Folder {
-  pub fn new(repo_result: RepoResult, output_folder: String) -> Self {
+impl OutputFolder {
+  pub fn new(repo_result: RepoResult, output_folder: &String) -> Self {
     Self {
       is_owner_exists: false,
       is_repository_exists: false,
       create: DirectoryCreator::new(),
-      output_folder: output_folder,
-      repo_result: repo_result,
+      output_folder: output_folder.clone(),
+      repo_result,
     }
   }
 
@@ -48,7 +46,29 @@ impl Output_Folder {
     self.is_repository_exists = base_path.exists();
   }
 
-  pub fn directory_not_empty(&self, directory: &PathBuf) -> bool {
+  pub fn validate_repository_folder(&self) -> Result<(), String> {
+    // If owner's or repository folder doesn't exists
+    // Its can be a valid output folder.
+    if !self.is_owner_exists {
+      return Ok(());
+    }
+
+    if !self.is_repository_exists {
+      return Ok(());
+    }
+
+    // Check if the directory is empty. If not, return error
+    if self.directory_not_empty(&self.create.repository_path) {
+      return Ok(());
+    }
+
+    Err(format!(
+      "Directory '{}' does exists and not empty.",
+      &self.create.repository_path.display()
+    ))
+  }
+
+  fn directory_not_empty(&self, directory: &PathBuf) -> bool {
     let entries = fs::read_dir(directory);
     let first_entry = entries.unwrap().next();
     first_entry.is_none()
