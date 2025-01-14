@@ -13,8 +13,8 @@ pub enum CloneMode {
   Pull
 }
 
-pub fn clone(repository: RepoResult, output_folder: &OutputFolder, mode: CloneMode) {
-  let cloner = WithoutGit::new(repository, output_folder);
+pub fn clone(repository: RepoResult, output_folder: &OutputFolder, mode: &CloneMode) {
+  let cloner = WithoutGit::new(repository);
 
     
 

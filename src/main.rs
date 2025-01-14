@@ -34,7 +34,7 @@ fn print_help() {
 }
 
 #[tokio::main]
-async fn begin_clone(url: &str, mode: CloneMode) {
+async fn begin_clone(url: &str, mode: &CloneMode) {
   if !config_file_rw::is_output_dir_set() {
     println!("Unable to clone anything...");
     println!("Output directory is not yet set.");
@@ -54,8 +54,8 @@ async fn begin_clone(url: &str, mode: CloneMode) {
   let wggg = match mode {
     CloneMode::With => "",
     CloneMode::Without => "out",
-    CloneMode::Pull=> ""
-  }
+    CloneMode::Pull => ""
+  };
 
   println!("\nCloning...");
   println!(
