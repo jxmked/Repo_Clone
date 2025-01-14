@@ -1,3 +1,4 @@
+mod directory_creator;
 /**
  * These functions exit the program for any invalid or fail response
  * or runtime error.
@@ -5,10 +6,12 @@
 mod output_folder;
 mod repo_info;
 
-use output_folder::OutputFolder;
+use directory_creator::DirectoryCreator;
 use repo_info::repo_info;
 
-use crate::{config_file_rw::JSONConfig, git_url_destructor::GitUrlDestructor, util::exit};
+use crate::config_file_rw::JSONConfig;
+use crate::git_url_destructor::GitUrlDestructor;
+use crate::util::exit;
 
 use serde_derive::{Deserialize, Serialize};
 
@@ -23,6 +26,14 @@ pub struct RepoResult {
 pub struct RepoReturnValue {
   pub result: RepoResult,
   pub path: OutputFolder,
+}
+
+pub struct OutputFolder {
+  pub is_owner_exists: bool,
+  pub is_repository_exists: bool,
+  pub create: DirectoryCreator,
+  output_folder: String,
+  repo_result: RepoResult,
 }
 
 pub fn repo(url_destructor: &GitUrlDestructor, conf: &JSONConfig) -> Result<RepoReturnValue, ()> {

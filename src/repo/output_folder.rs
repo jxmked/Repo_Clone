@@ -1,22 +1,13 @@
 // These function will handle the output folder,
 // Verify if its already exists or the folder is not empty
 
-mod directory_creator;
 
+use crate::repo::OutputFolder;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use directory_creator::DirectoryCreator;
-
+use super::directory_creator::DirectoryCreator;
 use super::RepoResult;
-
-pub struct OutputFolder {
-  pub is_owner_exists: bool,
-  pub is_repository_exists: bool,
-  pub create: DirectoryCreator,
-  output_folder: String,
-  repo_result: RepoResult,
-}
 
 impl OutputFolder {
   pub fn new(repo_result: RepoResult, output_folder: &String) -> Self {
