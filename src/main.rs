@@ -13,6 +13,7 @@ use crate::git_url_destructor::GitUrlDestructor as UrlDestruct;
 
 use std::env;
 
+use clone::{clone, CloneMode};
 use repo::repo;
 
 fn print_help() {
@@ -33,7 +34,7 @@ fn print_help() {
 }
 
 #[tokio::main]
-async fn begin_clone(url: &str, with_git: bool) {
+async fn begin_clone(url: &str, mode: CloneMode) {
   if !config_file_rw::is_output_dir_set() {
     println!("Unable to clone anything...");
     println!("Output directory is not yet set.");
@@ -50,9 +51,11 @@ async fn begin_clone(url: &str, with_git: bool) {
   let output_folder = &repo_ret.path;
   let repository = repo_ret.result;
 
-  
-
-  let wggg = if with_git { "" } else { "out" };
+  let wggg = match mode {
+    CloneMode::With => "",
+    CloneMode::Without => "out",
+    CloneMode::Pull=> ""
+  }
 
   println!("\nCloning...");
   println!(
@@ -60,6 +63,8 @@ async fn begin_clone(url: &str, with_git: bool) {
     repository.user, repository.repository, repository.branch
   );
   println!(" - with{} remote data...", wggg);
+
+  clone(repository, output_folder, mode);
 
   // without_git(
   //   repository,
@@ -80,8 +85,7 @@ fn main() {
     util::exit(1);
   }
 
-  let mut is_with_git: bool = false;
-  let mut is_do_pull: bool = false;
+  let mut clone_mode = CloneMode::Without;
 
   for i in 1..args.len() {
     let argv: String = args[i].to_string();
@@ -110,26 +114,16 @@ fn main() {
       util::exit(1);
     } else {
       if r_patten_func::is_flag(&argv) {
-        if is_with_git || is_do_pull {
-          println!("Either of flag is already raised. Only one must be raise.");
-          util::exit(1);
-        }
-
         match &argv[..] {
-          "-w" => is_with_git = true,
-          "-p" => is_do_pull = true,
+          "-p" => clone_mode = CloneMode::Pull,
+          "-w" => clone_mode = CloneMode::With,
           _ => {
             println!("\nFlag could not recognized!");
             util::exit(1);
           }
         }
       } else if r_patten_func::is_git_url(&argv) {
-        if !is_do_pull {
-          begin_clone(&argv, is_with_git);
-        } else {
-          println!("just d pull");
-          util::exit(1);
-        }
+        begin_clone(&argv, &clone_mode);
       } else {
         println!("Invalid argument: {}", argv);
 
