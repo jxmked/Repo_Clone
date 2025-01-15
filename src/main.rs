@@ -11,9 +11,10 @@ use crate::git_url_destructor::GitUrlDestructor as UrlDestruct;
 
 // use crate::do_clone as clone_mod;
 
-use std::env;
+use std::{env, fs, path::Path};
 
 use clone::{clone, CloneMode};
+use constants::GZIP_TEMP_FOLDER;
 use repo::repo;
 
 fn print_help() {
@@ -43,6 +44,11 @@ async fn begin_clone(url: &str, mode: &CloneMode) {
   }
 
   let conf = config_file_rw::read_json_file();
+
+  // Create temporary folder alonside with binary executable file
+  let mut tmp_folder = Path::new(&conf.exec_root).to_path_buf();
+  tmp_folder.push(GZIP_TEMP_FOLDER);
+  let _ = fs::create_dir_all(tmp_folder);
 
   let mut url_destructor = UrlDestruct::new(url);
   url_destructor.exec_split();
@@ -86,8 +92,6 @@ async fn begin_clone(url: &str, mode: &CloneMode) {
 }
 
 fn main() {
-  util::random(9);
-
   let args: Vec<_> = env::args().collect();
 
   if args.len() <= 1 {

@@ -2,7 +2,7 @@ pub const CONF_FILENAME: &str = "conf.json";
 
 pub const GZIP_TEMP_FOLDER: &str = "clearable";
 
-pub const RANDOM_CHARSET: &str = "abcdef1234567890";
+// pub const RANDOM_CHARSET: &str = "abcdef1234567890";
 
 // Since, I couldn't find better solution to extract the files
 // as I wanted to... I should go with the old style...

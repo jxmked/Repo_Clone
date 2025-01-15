@@ -2,7 +2,7 @@ use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
 
-use crate::constants;
+// use crate::constants;
 
 // https://play.rust-lang.org/?version=stable&mode=debug&edition=2015&gist=1434052276de34362138cba939f6967a
 // pub fn not<T: Not>(x: T) -> <T as Not>::Output {
@@ -43,9 +43,10 @@ pub fn create_if_not_exists(file_path: &str) {
 pub fn file_exists(file_path: &str) -> bool {
   Path::new(file_path).is_file()
 }
-pub fn random(len: usize) -> String {
-  random_string::generate(len, constants::RANDOM_CHARSET)
-}
+
+// pub fn random(len: usize) -> String {
+//   random_string::generate(len, constants::RANDOM_CHARSET)
+// }
 
 // pub fn remove_last_char(s: &str) -> String {
 //   if s.is_empty() {
