@@ -86,6 +86,7 @@ fn main() {
   }
 
   let mut clone_mode = CloneMode::Without;
+  let mut url = String::new();
 
   for i in 1..args.len() {
     let argv: String = args[i].to_string();
@@ -114,6 +115,7 @@ fn main() {
       util::exit(1);
     } else {
       if r_patten_func::is_flag(&argv) {
+        println!("flag found");
         match &argv[..] {
           "-p" => clone_mode = CloneMode::Pull,
           "-w" => clone_mode = CloneMode::With,
@@ -123,7 +125,7 @@ fn main() {
           }
         }
       } else if r_patten_func::is_git_url(&argv) {
-        begin_clone(&argv, &clone_mode);
+        url.push_str(&argv);
       } else {
         println!("Invalid argument: {}", argv);
 
@@ -131,4 +133,6 @@ fn main() {
       }
     }
   }
+
+  begin_clone(&url, &clone_mode);
 }

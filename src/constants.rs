@@ -12,3 +12,6 @@ pub const USER_AGENT: &str =
   "Mozilla/5.0 (platform; rv:gecko-version) Gecko/gecko-trail Firefox/firefox-version";
 
 pub const URL_PREFIX: &str = "https://github.com/";
+
+
+pub const CLONE_DEPTH: u8 = 1;

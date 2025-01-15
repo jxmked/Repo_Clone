@@ -47,13 +47,13 @@ pub fn random(len: usize) -> String {
   random_string::generate(len, constants::RANDOM_CHARSET)
 }
 
-pub fn remove_last_char(s: &str) -> String {
-  if s.is_empty() {
-    return String::new(); // Return empty string if input is empty
-  }
+// pub fn remove_last_char(s: &str) -> String {
+//   if s.is_empty() {
+//     return String::new(); // Return empty string if input is empty
+//   }
 
-  s[..s.len() - 1].to_string()
-}
+//   s[..s.len() - 1].to_string()
+// }
 
 // pub fn str_2_md5(value: &str) -> String {
 //   let digest = md5::compute(value.to_owned().as_bytes());
