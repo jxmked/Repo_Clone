@@ -1,8 +1,8 @@
 use std::fs::File;
 use std::io::{Read, Write};
-// use std::ops::Not;
-use crate::constants;
 use std::path::Path;
+
+use crate::constants;
 
 // https://play.rust-lang.org/?version=stable&mode=debug&edition=2015&gist=1434052276de34362138cba939f6967a
 // pub fn not<T: Not>(x: T) -> <T as Not>::Output {
@@ -54,3 +54,9 @@ pub fn remove_last_char(s: &str) -> String {
 
   s[..s.len() - 1].to_string()
 }
+
+// pub fn str_2_md5(value: &str) -> String {
+//   let digest = md5::compute(value.to_owned().as_bytes());
+
+//   return format!("{:x}", digest);
+// }

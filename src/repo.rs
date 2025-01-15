@@ -1,3 +1,4 @@
+mod directory_creator;
 /**
  * These functions exit the program for any invalid or fail response
  * or runtime error.
@@ -5,16 +6,16 @@
 mod output_folder;
 mod repo_info;
 
-use std::path::PathBuf;
-
-use output_folder::output_folder;
+use directory_creator::DirectoryCreator;
 use repo_info::repo_info;
 
-use crate::{config_file_rw::JSONConfig, util::exit};
+use crate::config_file_rw::JSONConfig;
+use crate::git_url_destructor::GitUrlDestructor;
+use crate::util::exit;
 
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct RepoResult {
   pub output_folder: String,
   pub user: String,
@@ -22,18 +23,24 @@ pub struct RepoResult {
   pub branch: String,
 }
 
-#[derive(Serialize, Deserialize)]
 pub struct RepoReturnValue {
   pub result: RepoResult,
-  pub path: PathBuf,
+  pub path: OutputFolder,
 }
 
-pub fn repo(
-  username: &str,
-  repo: &str,
-  branch: &str,
-  conf: &JSONConfig,
-) -> Result<RepoReturnValue, ()> {
+pub struct OutputFolder {
+  pub is_owner_exists: bool,
+  pub is_repository_exists: bool,
+  pub create: DirectoryCreator,
+  output_folder: String,
+  repo_result: RepoResult,
+}
+
+pub fn repo(url_destructor: &GitUrlDestructor, conf: &JSONConfig) -> Result<RepoReturnValue, ()> {
+  let username = &url_destructor.username;
+  let repo = &url_destructor.repository;
+  let branch = &url_destructor.branch;
+
   // Fetch repository info
   let res = repo_info(username, repo, conf);
 
@@ -63,16 +70,20 @@ pub fn repo(
     branch: used_branch,
   };
 
-  let abs_path = output_folder(&ret, conf);
+  let mut output_folder = OutputFolder::new(ret.clone(), &conf.output_path);
 
-  if abs_path.is_err() {
-    println!("{}", abs_path.as_ref().unwrap_err());
+  output_folder.set_directory_creator();
+
+  let is_valid_directory = output_folder.validate_repository_folder();
+
+  if is_valid_directory.is_err() {
+    println!("{}", is_valid_directory.as_ref().unwrap_err());
     println!("  Exiting...");
     exit(1);
   }
 
   return Ok(RepoReturnValue {
-    path: abs_path.ok().unwrap(),
+    path: output_folder,
     result: ret,
   });
 }
