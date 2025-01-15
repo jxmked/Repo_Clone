@@ -1,8 +1,8 @@
 use std::fs::File;
 use std::io::{Read, Write};
-use crate::constants;
-
 use std::path::Path;
+
+use crate::constants;
 
 // https://play.rust-lang.org/?version=stable&mode=debug&edition=2015&gist=1434052276de34362138cba939f6967a
 // pub fn not<T: Not>(x: T) -> <T as Not>::Output {
