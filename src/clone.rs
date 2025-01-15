@@ -3,12 +3,16 @@ mod pull_git;
 mod with_git;
 mod without_git;
 
+use std::fs;
+use std::path::Path;
+
 use base_trait::BaseTrait;
 use pull_git::PullGit;
 use with_git::WithGit;
 use without_git::WithoutGit;
 
 use crate::config_file_rw::JSONConfig;
+use crate::constants::GZIP_TEMP_FOLDER;
 use crate::repo::OutputFolder;
 use crate::repo::RepoResult;
 use crate::util::exit;
@@ -25,6 +29,9 @@ pub fn clone(
   config: JSONConfig,
   mode: &CloneMode,
 ) {
+  let mut clearable = Path::new(&config.exec_root.clone()).to_path_buf();
+  clearable.push(GZIP_TEMP_FOLDER);
+
   match mode {
     CloneMode::Pull => {
       println!("Pull Request...");
@@ -76,5 +83,6 @@ pub fn clone(
     }
   }
 
+  fs::remove_dir_all(clearable).unwrap();
   exit(0);
 }
