@@ -1,5 +1,5 @@
-use std::fs::File;
-use std::io;
+use std::fs::{self, File};
+use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 
 use flate2::read::GzDecoder;
@@ -12,7 +12,7 @@ use super::base_trait::BaseTrait;
 use crate::config_file_rw::JSONConfig;
 use crate::constants::GZIP_TEMP_FOLDER;
 use crate::constants::URL_PREFIX;
-use crate::repo::RepoResult;
+use crate::repo::{OutputFolder, RepoResult};
 
 pub struct WithoutGit {
   repository: RepoResult,
@@ -87,7 +87,11 @@ impl BaseTrait for WithoutGit {
       return Err("Unable to create temporary file.");
     }
 
-    let copy_result = io::copy(&mut byte, &mut tmp_file.unwrap());
+    let mut file = tmp_file.unwrap();
+
+    let copy_result = io::copy(&mut byte, &mut file);
+
+    file.flush().unwrap();
 
     if copy_result.is_err() {
       return Err("Failed to consume temporary file");
@@ -96,26 +100,45 @@ impl BaseTrait for WithoutGit {
     Ok(())
   }
 
-  fn copy_to_output(&mut self) -> Result<(), &str> {
-    let extraction_result = &self.extract_file_to_output();
+  fn copy_to_output(&mut self, output_folder: &mut OutputFolder) -> Result<(), &str> {
+    let extraction_result = &self.extract_file_to_output(output_folder);
 
     if extraction_result.is_err() {
-      return Err(&extraction_result.unwrap_err());
+      return Err(extraction_result.unwrap_err());
     }
 
-    match self.read_file_as_archive() {
-      Ok(mut archive) => {
-        while let Ok(first_entry) = archive.entries() {
-          for entry in first_entry {
-            if entry.as_ref().unwrap().header().entry_type() == tar::EntryType::Directory {
-              return Ok(entry.unwrap().path().unwrap().to_string_lossy().to_string());
-            }
-          }
+    let mut f_folder = output_folder.create.owner_path.clone();
+
+    let tmp_gzip = &self.tmp_gzip.to_string_lossy().to_string();
+    let open_file = File::open(tmp_gzip);
+
+    if open_file.is_err() {
+      return Err("Unable to open file");
+    }
+
+    let decoder = GzDecoder::new(open_file.unwrap());
+    let mut archive = Archive::new(decoder);
+
+    'f_entry_loop: while let Ok(first_entry) = archive.entries() {
+      for entry in first_entry {
+        if entry.as_ref().unwrap().header().entry_type() == tar::EntryType::Directory {
+          f_folder.push(&entry.unwrap().path().unwrap().to_string_lossy().to_string());
+          break 'f_entry_loop;
         }
-        return Err("Something went wrong at the end...");
+      }
+    }
+
+    if !f_folder.is_dir() {
+      return Err("Something went wrong in the near-end");
+    }
+
+    // Rename output folder to desired folder name
+    match fs::rename(f_folder, output_folder.create.repository_path.clone()) {
+      Ok(_) => {
+        println!("Ok")
       }
       Err(_) => {
-        return Err("Failed while opening file");
+        println!("Fucked")
       }
     }
 
@@ -124,8 +147,24 @@ impl BaseTrait for WithoutGit {
 }
 
 impl WithoutGit {
-  fn read_file_as_archive(&mut self) -> Result<Archive<GzDecoder<File>>, &'static str> {
-    let tmp_gzip = &self.tmp_gzip;
+  // fn read_file_as_archive(&mut self) -> Result<Archive<GzDecoder<File>>, &str> {
+  //   let tmp_gzip = &self.tmp_gzip;
+  //   let open_file = File::open(tmp_gzip);
+
+  //   if open_file.is_err() {
+  //     return Err("Unable to open file");
+  //   }
+
+  //   let decoder = GzDecoder::new(open_file.unwrap());
+  //   let archive = Ok(Archive::new(decoder));
+
+  //   return archive;
+  // }
+
+  fn extract_file_to_output(&self, output_folder: &mut OutputFolder) -> Result<(), &str> {
+    output_folder.create.owner();
+
+    let tmp_gzip = self.tmp_gzip.clone();
     let open_file = File::open(tmp_gzip);
 
     if open_file.is_err() {
@@ -133,42 +172,33 @@ impl WithoutGit {
     }
 
     let decoder = GzDecoder::new(open_file.unwrap());
-    let archive = Ok(Archive::new(decoder));
+    let mut archive = Archive::new(decoder);
 
-    return archive;
-  }
-
-  fn extract_file_to_output(&mut self) -> Result<(), &str> {
-    match self.read_file_as_archive() {
-      Ok(mut archive) => match archive.unpack(&self.out_dst) {
-        Ok(_) => {
-          return Ok(());
-        }
-        Err(_) => {
-          return Err("Failed while unpacking an archive");
-        }
-      },
+    match archive.unpack(&output_folder.create.owner_path) {
+      Ok(_) => {
+        return Ok(());
+      }
       Err(_) => {
-        return Err("Failed while opening file");
+        return Err("Failed while unpacking an archive");
       }
     }
   }
 
-  fn get_first_folder_name(&mut self) -> Result<String, &str> {
-    match self.read_file_as_archive() {
-      Ok(mut archive) => {
-        while let Ok(first_entry) = archive.entries() {
-          for entry in first_entry {
-            if entry.as_ref().unwrap().header().entry_type() == tar::EntryType::Directory {
-              return Ok(entry.unwrap().path().unwrap().to_string_lossy().to_string());
-            }
-          }
-        }
-        return Err("Something went wrong at the end...");
-      }
-      Err(_) => {
-        return Err("Failed while opening file");
-      }
-    }
-  }
+  // fn get_first_folder_name(&mut self) -> Result<String, &str> {
+  //   match self.read_file_as_archive() {
+  //     Ok(mut archive) => {
+  //       while let Ok(first_entry) = archive.entries() {
+  //         for entry in first_entry {
+  //           if entry.as_ref().unwrap().header().entry_type() == tar::EntryType::Directory {
+  //             return Ok(entry.unwrap().path().unwrap().to_string_lossy().to_string());
+  //           }
+  //         }
+  //       }
+  //       return Err("Something went wrong at the end...");
+  //     }
+  //     Err(_) => {
+  //       return Err("Failed while opening file");
+  //     }
+  //   }
+  // }
 }

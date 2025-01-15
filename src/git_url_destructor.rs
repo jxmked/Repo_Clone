@@ -41,7 +41,7 @@ impl GitUrlDestructor {
     }
   }
 
-  pub fn branch_defined(&self) -> bool {
-    !self.branch.is_empty()
-  }
+  // pub fn branch_defined(&self) -> bool {
+  //   !self.branch.is_empty()
+  // }
 }

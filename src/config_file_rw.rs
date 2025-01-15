@@ -16,7 +16,7 @@ lazy_static! {
   static ref ABS_FILE_PATH: String = __get_file_path__(constants::CONF_FILENAME);
 }
 
-const __DEFAULT_CONFIG__: &str = r#"{"token":"","output_path":""}"#;
+const __DEFAULT_CONFIG__: &str = r#"{"token":"","output_path":"", "exec_root":""}"#;
 
 fn __get_file_path__(file_path: &str) -> String {
   let mut dir: std::path::PathBuf = env::current_exe().unwrap();
@@ -33,8 +33,6 @@ pub fn read_json_file() -> JSONConfig {
   let contents: String = util::read_file(&ABS_FILE_PATH);
   let mut json_parsed: JSONConfig = serde_json::from_str(&contents).unwrap();
 
-  // Insert the path of executable into config
-  // It must be remain keep out of json config file
   let mut exec_root = std::env::current_exe().unwrap();
   exec_root.pop();
 

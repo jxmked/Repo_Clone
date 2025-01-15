@@ -15,7 +15,7 @@ impl DirectoryCreator {
   }
 
   fn create_directory(&self, path: PathBuf) {
-    fs::create_dir_all(path);
+    let _ = fs::create_dir_all(path);
   }
 
   pub fn set_owner_path(&mut self, path: PathBuf) {
@@ -31,8 +31,8 @@ impl DirectoryCreator {
     self.create_directory(path);
   }
 
-  pub fn repository(&self) {
-    let path = self.repository_path.clone();
-    self.create_directory(path);
-  }
+  // pub fn repository(&self) {
+  //   let path = self.repository_path.clone();
+  //   self.create_directory(path);
+  // }
 }

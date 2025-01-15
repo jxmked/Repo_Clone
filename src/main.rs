@@ -48,7 +48,7 @@ async fn begin_clone(url: &str, mode: &CloneMode) {
   url_destructor.exec_split();
 
   let repo_ret = repo(&url_destructor, &conf).unwrap();
-  let output_folder = &repo_ret.path;
+  let mut output_folder = repo_ret.path;
   let repository = repo_ret.result;
 
   let wggg = match mode {
@@ -64,7 +64,7 @@ async fn begin_clone(url: &str, mode: &CloneMode) {
   );
   println!(" - with{} remote data...", wggg);
 
-  clone(repository, output_folder, conf, mode);
+  clone(repository, &mut output_folder, conf, mode);
 
   // without_git(
   //   repository,
