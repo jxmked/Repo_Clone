@@ -65,7 +65,7 @@ impl BaseTrait for WithGit {
       return Err("Execution error");
     }
 
-    println!("Cloned");
+    println!("\nComplete.");
 
     Ok(())
   }

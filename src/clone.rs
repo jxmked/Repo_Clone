@@ -4,6 +4,7 @@ mod with_git;
 mod without_git;
 
 use base_trait::BaseTrait;
+use pull_git::PullGit;
 use with_git::WithGit;
 use without_git::WithoutGit;
 
@@ -26,7 +27,17 @@ pub fn clone(
 ) {
   match mode {
     CloneMode::Pull => {
-      println!("Git Pull Not Yet Available!");
+      println!("Pull Request...");
+
+      let mut cloner = PullGit::new(repository, config);
+
+      cloner.ready();
+
+      let copy_result = cloner.copy_to_output(output_folder);
+
+      if copy_result.is_err() {
+        println!("{}", copy_result.unwrap_err());
+      }
       exit(0);
     }
 

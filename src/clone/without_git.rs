@@ -135,10 +135,10 @@ impl BaseTrait for WithoutGit {
     // Rename output folder to desired folder name
     match fs::rename(f_folder, output_folder.create.repository_path.clone()) {
       Ok(_) => {
-        println!("Ok")
+        println!("\nCloned");
       }
       Err(_) => {
-        println!("Fucked")
+        println!("Something went wrong while redoing folder name...");
       }
     }
 

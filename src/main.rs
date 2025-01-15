@@ -47,22 +47,32 @@ async fn begin_clone(url: &str, mode: &CloneMode) {
   let mut url_destructor = UrlDestruct::new(url);
   url_destructor.exec_split();
 
-  let repo_ret = repo(&url_destructor, &conf).unwrap();
+  let repo_ret = repo(&url_destructor, &conf, mode).unwrap();
   let mut output_folder = repo_ret.path;
   let repository = repo_ret.result;
 
+  let mut print_clone_mode = String::new();
   let wggg = match mode {
-    CloneMode::With => "",
-    CloneMode::Without => "out",
-    CloneMode::Pull => "",
+    CloneMode::With => {
+      print_clone_mode.push_str("Cloning...");
+      ""
+    }
+    CloneMode::Without => {
+      print_clone_mode.push_str("Cloning...");
+      "out"
+    }
+    CloneMode::Pull => {
+      print_clone_mode.push_str("Pulling...");
+      ""
+    }
   };
 
-  println!("\nCloning...");
+  println!("\n{}", print_clone_mode);
   println!(
     " * https://github.com/{}/{}/tree/{}",
     repository.user, repository.repository, repository.branch
   );
-  println!(" - with{} remote data...", wggg);
+  println!(" - with{} remote data...\n", wggg);
 
   clone(repository, &mut output_folder, conf, mode);
 
@@ -115,7 +125,6 @@ fn main() {
       util::exit(1);
     } else {
       if r_patten_func::is_flag(&argv) {
-        println!("flag found");
         match &argv[..] {
           "-p" => clone_mode = CloneMode::Pull,
           "-w" => clone_mode = CloneMode::With,

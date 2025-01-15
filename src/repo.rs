@@ -9,6 +9,7 @@ mod repo_info;
 use directory_creator::DirectoryCreator;
 use repo_info::repo_info;
 
+use crate::clone::CloneMode;
 use crate::config_file_rw::JSONConfig;
 use crate::git_url_destructor::GitUrlDestructor;
 use crate::util::exit;
@@ -36,7 +37,11 @@ pub struct OutputFolder {
   repo_result: RepoResult,
 }
 
-pub fn repo(url_destructor: &GitUrlDestructor, conf: &JSONConfig) -> Result<RepoReturnValue, ()> {
+pub fn repo(
+  url_destructor: &GitUrlDestructor,
+  conf: &JSONConfig,
+  mode: &CloneMode,
+) -> Result<RepoReturnValue, ()> {
   let username = &url_destructor.username;
   let repo = &url_destructor.repository;
   let branch = &url_destructor.branch;
@@ -76,10 +81,35 @@ pub fn repo(url_destructor: &GitUrlDestructor, conf: &JSONConfig) -> Result<Repo
 
   let is_valid_directory = output_folder.validate_repository_folder();
 
-  if is_valid_directory.is_err() {
-    println!("{}", is_valid_directory.as_ref().unwrap_err());
-    println!("  Exiting...");
-    exit(1);
+  match mode {
+    CloneMode::Pull => {
+      // With pull request, wWe need to verify the validity of already cloned repository
+      // in an opposite way.
+      if !is_valid_directory.is_err() {
+        println!("Directory doesn't exists!");
+        println!("Add '-w' to your command to clone it with remote data");
+        exit(1);
+      }
+
+      // We should also check if the cloned repository has
+      // remote data...
+      let mut sample = output_folder.create.repository_path.clone();
+      sample.push(".git");
+
+      if !sample.exists() {
+        println!("Directory does not have remote data!");
+        println!("Delete the current repository and clone it with '-w' remote data");
+        exit(1);
+      }
+    }
+
+    CloneMode::With | CloneMode::Without => {
+      if is_valid_directory.is_err() {
+        println!("{}", is_valid_directory.as_ref().unwrap_err());
+        println!("  Exiting...");
+        exit(1);
+      }
+    }
   }
 
   return Ok(RepoReturnValue {
