@@ -56,8 +56,8 @@ pub fn clone(
 
       if copy_result.is_err() {
         println!("{}", copy_result.unwrap_err());
+        exit(0);
       }
-      exit(0);
     }
 
     CloneMode::With => {
@@ -71,6 +71,7 @@ pub fn clone(
 
       if copy_result.is_err() {
         println!("{}", copy_result.unwrap_err());
+        exit(0);
       }
     }
 
@@ -91,6 +92,7 @@ pub fn clone(
 
       if copy_result.is_err() {
         println!("{}", copy_result.unwrap_err());
+        exit(0);
       }
     }
   }
