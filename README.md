@@ -41,10 +41,4 @@ It also logs your cloned repository so you can see when or track the repositorie
 |    -w    |                     Clone with `.git` folder for later use                     |  Optional   |
 |    -p    | Pull (Update) Existing Repository in your local machine from Github Repository |  Optional   |
 
-## Notes:
-
-- Github token is required to clone repository with data and private repository.
-- Set your own directory inside of the `clone.sh` file
-  - Must be change to already existing directory.
-
 #### **Created with love and frustration** by [Jovan](https://facebook.com/deguia25)
