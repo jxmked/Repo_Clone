@@ -6,7 +6,7 @@ lazy_static! {
   static ref git_host: Regex = Regex::new(r"^(http(s)\:\/\/)?(www\.)?github\.com\/").unwrap();
 
   // Match any non slashes characters
-  static ref git_non_slash: Regex = Regex::new(r"([a-zA-Z0-9\-\_]+)").unwrap();
+  static ref git_non_slash: Regex = Regex::new(r"([a-zA-Z0-9\-\_\.]+)").unwrap();
 }
 
 pub struct GitUrlDestructor {
