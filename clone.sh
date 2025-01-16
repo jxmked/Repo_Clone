@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This is the very first x-clone version I used in Termux in Android
+
 # ----------------------------------------
 #Downloaded files will go here
 # Change This Directory to your existing Working Directory
