@@ -6,7 +6,9 @@ lazy_static! {
   static ref git_host: Regex = Regex::new(r"^(http(s)\:\/\/)?(www\.)?github\.com\/").unwrap();
 
   // Match any non slashes characters
-  static ref git_non_slash: Regex = Regex::new(r"([a-zA-Z0-9\-\_]+)").unwrap();
+  static ref git_non_slash: Regex = Regex::new(r"([a-zA-Z0-9\-\_\.]+)").unwrap();
+
+  static ref rm_dot_git_at_end: Regex = Regex::new(r"\.git$").unwrap();
 }
 
 pub struct GitUrlDestructor {
@@ -27,7 +29,9 @@ impl GitUrlDestructor {
   }
 
   pub fn exec_split(&mut self) {
-    let n_prot_host = git_host.replace(&self.url, "").to_string(); // No Protocol and host
+    let mut n_prot_host = git_host.replace(&self.url, "").to_string(); // No Protocol and host
+    n_prot_host = rm_dot_git_at_end.replace(&n_prot_host, "").to_string(); // Remove .git at the end
+
     let res: Vec<&str> = git_non_slash
       .find_iter(&n_prot_host)
       .map(|m| m.as_str())
