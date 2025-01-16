@@ -1,4 +1,5 @@
 mod base_trait;
+mod log;
 mod pull_git;
 mod with_git;
 mod without_git;
@@ -7,6 +8,7 @@ use std::fs;
 use std::path::Path;
 
 use base_trait::BaseTrait;
+use log::log_repo;
 use pull_git::PullGit;
 use with_git::WithGit;
 use without_git::WithoutGit;
@@ -17,6 +19,7 @@ use crate::repo::OutputFolder;
 use crate::repo::RepoResult;
 use crate::util::exit;
 
+#[derive(Clone)]
 pub enum CloneMode {
   With,
   Without,
@@ -31,6 +34,15 @@ pub fn clone(
 ) {
   let mut clearable = Path::new(&config.exec_root.clone()).to_path_buf();
   clearable.push(GZIP_TEMP_FOLDER);
+
+  let path_to_cloned = &output_folder
+    .create
+    .repository_path
+    .to_string_lossy()
+    .to_string();
+
+  let to_log = repository.clone();
+  let path_to_log = config.output_path.clone();
 
   match mode {
     CloneMode::Pull => {
@@ -82,6 +94,10 @@ pub fn clone(
       }
     }
   }
+
+  println!("\nPath: {}\n\n", path_to_cloned);
+
+  log_repo(to_log, mode, path_to_log);
 
   fs::remove_dir_all(clearable).unwrap();
   exit(0);
