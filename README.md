@@ -4,6 +4,8 @@
 
 Clone Github repository in a manageable way
 
+And, Yay! My very first Rust program. There is a lot of room to improve but it works so...
+
 ### Description
 
 This program clone repository and store them in a managable way.
