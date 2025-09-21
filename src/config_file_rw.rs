@@ -5,6 +5,13 @@ use lazy_static::lazy_static;
 use serde_derive::{Deserialize, Serialize};
 use std::env;
 
+
+/**
+ * TOKEN for GitHub API
+ * OUTPUT_PATH for cloned repositories
+ * EXEC_ROOT for where x-clone execuable is located
+ */
+
 #[derive(Serialize, Deserialize)]
 pub struct JSONConfig {
   pub token: String,

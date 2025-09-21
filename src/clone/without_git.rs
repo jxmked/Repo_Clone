@@ -14,6 +14,8 @@ use crate::constants::GZIP_TEMP_FOLDER;
 use crate::constants::URL_PREFIX;
 use crate::repo::{OutputFolder, RepoResult};
 
+const LOG_LEVEL: u8 = 1; // 0 = silent, 1 = normal, 2 = verbose
+
 pub struct WithoutGit {
   repository: RepoResult,
   repo_url: String,
@@ -58,6 +60,10 @@ impl BaseTrait for WithoutGit {
   }
 
   fn fetch_download(&mut self) -> Result<(), &str> {
+    if LOG_LEVEL >= 1 {
+      println!("Repository is currrently being downloading...");
+    }
+
     let response = reqwest::get(&self.repo_url);
     let result = block_on(response);
 
@@ -71,6 +77,10 @@ impl BaseTrait for WithoutGit {
       } else if unw_err.is_timeout() {
         return Err("Connection Timeout");
       }
+
+      let err_string = unw_err.to_string();
+      println!("Error: {}", err_string);
+
       return Err("Unknown Error");
     }
 
@@ -81,6 +91,9 @@ impl BaseTrait for WithoutGit {
   }
 
   fn build_file(&mut self, mut byte: &[u8]) -> Result<(), &str> {
+    if LOG_LEVEL >= 1 {
+      println!("Creating temporary file...");
+    }
     let tmp_file = File::create(&self.tmp_gzip);
 
     if tmp_file.is_err() {
@@ -101,6 +114,9 @@ impl BaseTrait for WithoutGit {
   }
 
   fn copy_to_output(&mut self, output_folder: &mut OutputFolder) -> Result<(), &str> {
+    if LOG_LEVEL >= 1 {
+      println!("Extracting files...");
+    }
     let extraction_result = &self.extract_file_to_output(output_folder);
 
     if extraction_result.is_err() {
@@ -162,6 +178,9 @@ impl WithoutGit {
   // }
 
   fn extract_file_to_output(&self, output_folder: &mut OutputFolder) -> Result<(), &str> {
+    if LOG_LEVEL >= 1 {
+      println!("Extracting...");
+    }
     output_folder.create.owner();
 
     let tmp_gzip = self.tmp_gzip.clone();
